@@ -87,14 +87,17 @@ Nakon pokretanja servera, otvoriti HTML fajlove u browser-u, na primer:
 
 ## API konfiguracija
 
-Za AI funkcionalnosti potreban je API ključ. U folderu `server` nalazi se fajl `env.json` u kome se čuva konfiguracija.
+Za AI funkcionalnosti potreban je API ključ. U folderu `server` nalazi se fajl `env.json`i fajl `server.js` u kome se čuva konfiguracija.
 
 Primer sadržaja:
 
 ```json
 {
-  "GROQ_API_KEY": "unesi_svoj_api_kljuc"
+  "GROQ_API_KEY": "OVDE_JE_POTREBNO_UNETI_API_KLJUC"
 }
+```
+```js
+    const groq = new Groq({ apiKey: "OVDE_JE_POTREBNO_UNETI_API_KLJUC"});
 ```
 
 ## Napomena

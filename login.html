@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prijava | ProGarage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { 'as-bg': '#dde0e4', 'as-accent': '#6599d3', 'as-text': '#000000' } } }
+        }
+    </script>
+</head>
+<body class="bg-as-bg h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-md w-full bg-white p-10 rounded-3xl shadow-2xl">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl font-black italic text-as-text">Pro<span class="text-as-accent">Garage</span></h2>
+            <p class="text-gray-400 font-medium">Dobrodošli nazad!</p>
+        </div>
+
+        <form id="loginForm" class="space-y-6">
+            <div>
+                <label class="block text-sm font-bold mb-2">Email adresa</label>
+                <input type="email" id="email" required 
+                    class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-as-accent transition">
+            </div>
+            <div>
+                <label class="block text-sm font-bold mb-2">Lozinka</label>
+                <input type="password" id="password" required 
+                    class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-as-accent transition">
+            </div>
+
+            <button type="submit" 
+                class="w-full bg-as-accent text-white font-black py-4 rounded-2xl shadow-lg hover:opacity-90 transition transform hover:-translate-y-1">
+                PRIJAVI SE
+            </button>
+        </form>
+
+        <p class="text-center mt-8 text-sm text-gray-500">
+            Nemate nalog? <a href="/register.html" class="text-as-accent font-bold hover:underline">Registrujte servis</a>
+        </p>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const credentials = {
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(credentials)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Čuvamo podatke o sesiji u browseru
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    window.location.href = '/dashboard.html';
+                } else {
+                    alert(result.message || "Pogrešan email ili lozinka.");
+                }
+            } catch (err) {
+                alert("Greška pri povezivanju sa serverom.");
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="sr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registracija Servisa | ProGarage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "as-bg": "#dde0e4",
+              "as-accent": "#6599d3",
+              "as-text": "#000000",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="bg-as-bg p-6">
+    <div class="max-w-3xl mx-auto bg-white p-8 rounded-3xl shadow-lg">
+      <h2 class="text-3xl font-black mb-2 text-center text-as-text">
+        Pro<span class="text-as-accent">Garage</span>
+      </h2>
+      <p class="text-center text-gray-500 mb-8 font-medium">Registrujte svoj servis i digitalizujte poslovanje</p>
+
+      <form id="regForm" class="space-y-6">
+        <div class="grid grid-cols-1 gap-4">
+          <div>
+            <label class="block font-bold mb-1 text-sm text-gray-700">Naziv servisa</label>
+            <input type="text" id="serviceName" required placeholder="Npr. Auto Centar Pro"
+              class="w-full border-2 border-gray-100 p-2.5 rounded-xl focus:border-as-accent outline-none transition" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-bold mb-1 text-sm text-gray-700">Email</label>
+            <input type="email" id="email" required placeholder="servis@primer.rs"
+              class="w-full border-2 border-gray-100 p-2.5 rounded-xl focus:border-as-accent outline-none transition" />
+          </div>
+          <div>
+            <label class="block font-bold mb-1 text-sm text-gray-700">Lozinka</label>
+            <input type="password" id="password" required placeholder="••••••••"
+              class="w-full border-2 border-gray-100 p-2.5 rounded-xl focus:border-as-accent outline-none transition" />
+          </div>
+        </div>
+
+        <hr class="border-gray-100" />
+
+        <div class="flex justify-between items-center">
+            <h3 class="text-xl font-bold text-as-accent">Cenovnik Usluga</h3>
+            <button type="button" onclick="addServiceRow()" 
+                class="text-xs bg-as-accent text-white px-3 py-1.5 rounded-lg font-bold hover:opacity-80 transition">
+                + DODAJ USLUGU
+            </button>
+        </div>
+        
+        <div id="servicesList" class="space-y-3">
+          
+        </div>
+
+        <hr class="border-gray-100" />
+
+        <div class="text-center">
+          <h3 class="text-lg font-bold text-as-text uppercase tracking-widest mb-6">Izaberite plan pretplate</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div id="plan-start" onclick="selectPlan('start')" class="plan-card cursor-pointer bg-white border-2 border-gray-100 p-5 rounded-2xl hover:shadow-md transition relative">
+              <h4 class="font-black text-sm">START</h4>
+              <div class="text-xl font-bold text-as-accent">19 €</div>
+              <p class="text-[10px] text-gray-400 mt-2 uppercase">Osnovno zakazivanje</p>
+            </div>
+            <div id="plan-pro" onclick="selectPlan('pro')" class="plan-card cursor-pointer bg-blue-50 border-2 border-as-accent p-5 rounded-2xl shadow-lg relative scale-105">
+              <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-as-accent text-white px-2 py-0.5 rounded-full text-[8px] font-bold">PREPORUČENO</div>
+              <h4 class="font-black text-sm">PRO</h4>
+              <div class="text-xl font-bold text-as-accent">39 €</div>
+              <p class="text-[10px] text-gray-500 mt-2 uppercase">AI + Magacin</p>
+            </div>
+            <div id="plan-partner" onclick="selectPlan('partner')" class="plan-card cursor-pointer bg-white border-2 border-gray-100 p-5 rounded-2xl hover:shadow-md transition">
+              <h4 class="font-black text-sm text-gray-500">PARTNER</h4>
+              <div class="text-md font-bold mt-1">Kontakt</div>
+              <p class="text-[10px] text-gray-400 mt-2 uppercase">Mreža servisa</p>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="w-full bg-as-accent text-white font-black py-4 rounded-2xl shadow-lg hover:translate-y-[-2px] transition-all uppercase tracking-widest mt-4">
+          Završi registraciju
+        </button>
+      </form>
+    </div>
+
+    <script>
+        let selectedPlan = "pro";
+
+  // Funkcija za uklanjanje reda
+  function removeRow(btn) {
+    btn.parentElement.remove();
+  }
+
+  // Funkcija za dodavanje novog reda usluge
+  function addServiceRow() {
+    const list = document.getElementById("servicesList");
+    const row = document.createElement("div");
+    row.className = "flex gap-2 items-center animate-in fade-in slide-in-from-top-1 duration-200 service-item";
+    row.innerHTML = `
+        <input type="text" placeholder="Usluga" required
+          class="flex-1 border-2 border-gray-100 p-2 rounded-xl service-name outline-none focus:border-as-accent" />
+        <input type="number" placeholder="Cena (€)" required
+          class="w-28 border-2 border-gray-100 p-2 rounded-xl service-price outline-none focus:border-as-accent" />
+        <button type="button" onclick="removeRow(this)" class="text-red-400 hover:text-red-600 px-2 font-bold text-xl">×</button>
+    `;
+    list.appendChild(row);
+  }
+
+  // Dodaj jedan prazan red odmah pri učitavanju da forma ne bude prazna
+  document.addEventListener("DOMContentLoaded", addServiceRow);
+
+  document.getElementById("regForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // Pametno prikupljanje svih usluga
+    const services = [];
+    const rows = document.querySelectorAll(".service-item");
+    
+    rows.forEach(row => {
+      const name = row.querySelector(".service-name").value;
+      const price = row.querySelector(".service-price").value;
+      if (name && price) {
+        services.push({ name, price });
+      }
+    });
+
+    // Definisanje workerCount na osnovu plana (MVP logika)
+    let defaultWorkers = 1;
+    if(selectedPlan === 'pro') defaultWorkers = 5;
+    if(selectedPlan === 'partner') defaultWorkers = 20;
+
+    const data = {
+      role: "servis",
+      plan: selectedPlan,
+      serviceName: document.getElementById("serviceName").value,
+      email: document.getElementById("email").value,
+      password: document.getElementById("password").value,
+      workerCount: defaultWorkers, // Dodato jer si izbacio input
+      services: services 
+    };
+
+    console.log("Slanje podataka:", data);
+
+    try {
+      const response = await fetch("http://localhost:3000/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        window.location.href = "/login";
+      } else {
+        const result = await response.json();
+        alert("Greška: " + result.message);
+      }
+    } catch (err) {
+      console.error("Network error:", err);
+      alert("Server nije dostupan.");
+    }
+  });
+
+  function selectPlan(plan) {
+    selectedPlan = plan;
+    const cards = document.querySelectorAll(".plan-card");
+    cards.forEach((card) => {
+      card.className = "plan-card cursor-pointer bg-white border-2 border-gray-100 p-5 rounded-2xl hover:shadow-md transition relative";
+    });
+
+    const activeCard = document.getElementById(`plan-${plan}`);
+    if(plan === 'pro') {
+        activeCard.className = "plan-card cursor-pointer bg-blue-50 border-2 border-as-accent p-5 rounded-2xl shadow-lg relative scale-105";
+    } else {
+        activeCard.className = "plan-card cursor-pointer bg-blue-50 border-2 border-as-accent p-5 rounded-2xl shadow-md relative";
+    }
+  }
+    </script>
+  </body>
+</html>

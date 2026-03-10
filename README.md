@@ -96,8 +96,9 @@ Primer sadržaja:
   "GROQ_API_KEY": "OVDE_JE_POTREBNO_UNETI_API_KLJUC"
 }
 ```
+
 ```js
-    const groq = new Groq({ apiKey: "OVDE_JE_POTREBNO_UNETI_API_KLJUC"});
+  const groq = new Groq({ apiKey: "OVDE_JE_POTREBNO_UNETI_API_KLJUC"});
 ```
 
 ## Napomena

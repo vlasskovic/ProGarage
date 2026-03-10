@@ -104,6 +104,7 @@ Projekat je razvijen kao MVP verzija sistema. Podaci se čuvaju lokalno u JSON f
 ## Autori
 
 Autori projekta: 
+
 	Baščarević Milija [2025/0213]
 	Vlašković Mateja [2025/0422]
 	Krstić Marko [2025/0118]

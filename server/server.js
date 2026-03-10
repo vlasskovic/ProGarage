@@ -162,8 +162,7 @@ app.patch('/api/inventory/:id/stock', (req, res) => {
 
 
 // Inicijalizacija GROQ API-a
-const fs = require('fs');
-const path = require('path');
+
 const Groq = require('groq-sdk');
 
 let GROQ_API_KEY = '';

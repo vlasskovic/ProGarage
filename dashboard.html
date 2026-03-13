@@ -4,131 +4,127 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ProGarage | Dashboard</title>
+
+    <!-- Ucitavanje Tailwind CSS biblioteka Play CDN metodom, verzija 3.4.17-->
     <script src="https://cdn.tailwindcss.com"></script>
+
+     <!-- Konfiguracija Tailwind-a: dodavanje boja koje koristimo u aplikaciji -->
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              "as-bg": "#dde0e4",
-              "as-accent": "#6599d3",
-              "as-text": "#000000",
+              "as-bg": "#dde0e4",      
+              "as-accent": "#6599d3",  
+              "as-text": "#000000",    
             },
           },
         },
       };
     </script>
   </head>
+
   <body class="bg-as-bg font-sans">
     <script>
+      /* Učitavanje prijavljenog korisnika iz localStorage-a */
       const user = JSON.parse(localStorage.getItem("user"));
+
+      /* Ako korisnik nije prijavljen, preusmerava ga na login stranicu */
       if (!user) {
         window.location.href = "/login.html";
       }
     </script>
 
     <div class="flex h-screen">
+      <!-- Leva navigacija / sidebar -->
       <aside class="w-64 bg-white shadow-xl flex flex-col p-6">
         <div class="text-2xl font-black mb-10 text-as-text">
           Pro<span class="text-as-accent">Garage</span>
         </div>
-        <nav class="space-y-4 flex-1">
-          <a
-            href="#"
-            class="block p-3 rounded-xl bg-as-accent text-white font-bold shadow-md"
-            >🏠 Dashboard</a
-          >
-          <a
-            href="/calendar.html"
-            class="block p-3 rounded-xl hover:bg-gray-100 transition"
-            >📅 Kalendar</a
-          >
-          <a
-            href="/inventory.html"
-            class="block p-3 rounded-xl hover:bg-gray-100 transition"
-            >📦 Magacin</a
-          >
 
-          <div
-            id="ownerMenu"
-            class="hidden border-t border-gray-100 pt-4 mt-4 space-y-2"
-          >
+        <!-- Navigacioni meni -->
+        <nav class="space-y-4 flex-1">
+          <a href="#" class="block p-3 rounded-xl bg-as-accent text-white font-bold shadow-md">
+            🏠 Dashboard
+          </a>
+
+          <a href="/calendar.html" class="block p-3 rounded-xl hover:bg-gray-100 transition">
+            📅 Kalendar
+          </a>
+
+          <a href="/inventory.html" class="block p-3 rounded-xl hover:bg-gray-100 transition">
+            📦 Magacin
+          </a>
+
+          <!-- Sekcija vidljiva samo vlasniku servisa -->
+          <div id="ownerMenu" class="hidden border-t border-gray-100 pt-4 mt-4 space-y-2">
             <p class="text-[10px] font-bold text-gray-400 uppercase px-3 mb-2">
               Administracija
             </p>
-            <button
-              onclick="openWorkerModal()"
-              class="w-full text-left p-3 rounded-xl hover:bg-blue-50 text-as-accent font-bold transition flex items-center"
-            >
+            <!-- Dugme za dodavanje radnika -->
+            <button onclick="openWorkerModal()" class="w-full text-left p-3 rounded-xl hover:bg-blue-50 text-as-accent font-bold transition flex items-center">
               <span class="mr-2">➕</span> Dodaj Radnika
             </button>
           </div>
         </nav>
-        <button
-          onclick="logout()"
-          class="mt-auto text-red-500 font-bold p-3 hover:bg-red-50 rounded-xl transition text-left"
-        >
+
+        <!-- Dugme za odjavu -->
+        <button onclick="logout()" class="mt-auto text-red-500 font-bold p-3 hover:bg-red-50 rounded-xl transition text-left">
           🚪 Odjavi se
         </button>
       </aside>
 
+      <!-- Dashboard: -->
       <main class="flex-1 overflow-y-auto p-8">
         <header class="flex justify-between items-center mb-10">
           <div>
             <h1 class="text-3xl font-black" id="welcomeText">Dobrodošli!</h1>
-            <p class="text-gray-500 font-medium" id="serviceNameDisplay"></p>
+            <p class="text-gray-500 font-medium" id="serviceNameDisplay"></p> <!-- Ime servisa -->
           </div>
+
           <div class="flex items-center space-x-4">
-            <span
-              id="planBadge"
-              class="hidden bg-white px-4 py-2 rounded-full shadow-sm text-xs font-bold uppercase tracking-wider"
-            ></span>
-            <div
-              class="w-12 h-12 rounded-2xl bg-as-accent flex items-center justify-center text-white font-bold text-xl shadow-lg"
-              id="userInitial"
-            ></div>
+            <!-- Prikaz plana pretplate -->
+            <span id="planBadge" class="hidden bg-white px-4 py-2 rounded-full shadow-sm text-xs font-bold uppercase tracking-wider"></span>
+            <!-- Ikonica sa početnim slovom email adrese -->
+            <div class="w-12 h-12 rounded-2xl bg-as-accent flex items-center justify-center text-white font-bold text-xl shadow-lg" id="userInitial"></div>
           </div>
         </header>
 
+        <!-- Kartice sa statistikom -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <div
-            id="statsRevenue"
-            class="hidden bg-white p-6 rounded-3xl shadow-sm border-b-4 border-as-accent"
-          >
+
+          <!-- Kartica prihoda, vidljiva samo servisu -->
+          <div id="statsRevenue" class="hidden bg-white p-6 rounded-3xl shadow-sm border-b-4 border-as-accent">
             <p class="text-xs font-bold text-gray-400 uppercase mb-1">
               Prihodi (Mesec)
             </p>
             <h2 class="text-3xl font-black text-as-text">0 €</h2>
           </div>
-          <div
-            class="bg-white p-6 rounded-3xl shadow-sm border-b-4 border-yellow-400"
-          >
+
+          <!-- Kartica sa brojem aktivnih servisa -->
+          <div class="bg-white p-6 rounded-3xl shadow-sm border-b-4 border-yellow-400">
             <p class="text-xs font-bold text-gray-400 uppercase mb-1">
               Aktivni Servisi
             </p>
-            <h2
-              class="text-3xl font-black text-as-text"
-              id="activeAppointmentsCount"
-            >
+            <h2 class="text-3xl font-black text-as-text" id="activeAppointmentsCount">
               0
             </h2>
           </div>
-          <div
-            class="bg-white p-6 rounded-3xl shadow-sm border-b-4 border-red-400"
-          >
+
+          <!-- Kartica sa brojem kritičnih delova -->
+          <div class="bg-white p-6 rounded-3xl shadow-sm border-b-4 border-red-400">
             <p class="text-xs font-bold text-gray-400 uppercase mb-1">
               Kritični Delovi
             </p>
-            <h2
-              class="text-3xl font-black text-red-500"
-              id="criticalPartsCount"
-            >
+            <h2 class="text-3xl font-black text-red-500" id="criticalPartsCount">
               0
             </h2>
           </div>
         </div>
 
+        <!-- Naredni servisi i radnici -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
           <div class="bg-white p-8 rounded-3xl shadow-sm">
             <h3 class="font-black text-xl mb-6">Naredni servisi</h3>
             <div id="appointmentsList" class="space-y-4">
@@ -138,93 +134,95 @@
             </div>
           </div>
 
-          <div
-            id="workersSection"
-            class="hidden bg-white p-8 rounded-3xl shadow-sm"
-          >
+          <!-- Vidljivo samo adminu -->
+          <div id="workersSection" class="hidden bg-white p-8 rounded-3xl shadow-sm">
             <div class="flex justify-between items-center mb-6">
               <h3 class="font-black text-xl">Zaposleni radnici</h3>
+              <!-- Prikaz broja radnika -->
               <span
                 id="workerLimitBadge"
                 class="text-xs font-bold bg-as-bg px-3 py-1 rounded-full"
               ></span>
             </div>
+            <!-- Lista radnika -->
             <div id="workersList" class="space-y-4"></div>
           </div>
+
         </div>
       </main>
     </div>
 
-    <div
-      id="workerModal"
-      class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50"
-    >
-      <div
-        class="bg-white w-full max-w-md rounded-3xl shadow-2xl p-8 transform transition-all"
-      >
+    <div id="workerModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl p-8 transform transition-all"> 
+
         <h3 class="text-2xl font-black mb-6">
           Dodaj novog <span class="text-as-accent">radnika</span>
         </h3>
+
         <form id="addWorkerForm" class="space-y-4">
-          <input
-            type="email"
-            id="workerEmail"
-            placeholder="Email radnika"
-            required
-            class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-as-accent"
-          />
-          <input
-            type="password"
-            id="workerPass"
-            placeholder="Lozinka za radnika"
-            required
-            class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-as-accent"
-          />
+          <input  type="email" id="workerEmail" placeholder="Email radnika" required class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-as-accent"/>
+          <input type="password" id="workerPass" placeholder="Lozinka za radnika" required class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-as-accent"/>
+
           <div class="flex space-x-3 pt-4">
-            <button
-              type="button"
-              onclick="closeWorkerModal()"
-              class="flex-1 py-3 font-bold text-gray-400 hover:text-gray-600 transition"
-            >
+            <button type="button" onclick="closeWorkerModal()" class="flex-1 py-3 font-bold text-gray-400 hover:text-gray-600 transition" >
               Odustani
             </button>
-            <button
-              type="submit"
-              class="flex-1 bg-as-accent text-white font-bold py-3 rounded-xl shadow-lg"
-            >
+
+            <button type="submit" class="flex-1 bg-as-accent text-white font-bold py-3 rounded-xl shadow-lg">
               KREIRAJ NALOG
             </button>
           </div>
         </form>
+
       </div>
     </div>
 
     <script>
+      /* Promenljiva za automatsko osvežavanje dashboard-a */
       let dashboardAutoRefresh = null;
 
+      /* Funkcija učitava statistiku dashboard-a sa servera */
       async function loadDashboardStats() {
         const user = JSON.parse(localStorage.getItem("user"));
+
+        /* Ako korisnik nema serviceName, prekidamo funkciju */
         if (!user?.serviceName) return;
 
         try {
+          /* Slanje GET zahteva serveru za statistiku servisa */
           const res = await fetch(
-            `http://localhost:3000/api/stats/${encodeURIComponent(user.serviceName)}`,
+            `http://localhost:3000/api/stats/${encodeURIComponent(user.serviceName)}`
           );
+
+          /* Pretvaranje odgovora u JSON */
           const stats = await res.json();
 
+          /* Pronalazak elementa za prihode */
           const revenueEl = document.querySelector("#statsRevenue h2");
+
+          /* Ako element postoji, upisujemo formatiran prihod */
           if (revenueEl) {
-            revenueEl.innerText = `${Number(stats.revenue || 0).toLocaleString("sr-RS", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
+            revenueEl.innerText = `${Number(stats.revenue || 0).toLocaleString("sr-RS", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })} €`;
           }
 
+          /* Pronalazak elementa za broj aktivnih servisa */
           const activeCountEl = document.getElementById("activeAppointmentsCount");
+
+          /* Upis broja aktivnih servisa */
           if (activeCountEl) {
             activeCountEl.innerText = stats.activeCount ?? 0;
           }
 
+          /* Pronalazak elementa za kritične delove */
           const criticalCountEl = document.querySelector(".border-red-400 h2");
+
+          /* Upis broja kritičnih delova i promena boje ako je broj 0 */
           if (criticalCountEl) {
             criticalCountEl.innerText = stats.criticalCount ?? 0;
+
             if ((stats.criticalCount ?? 0) === 0) {
               criticalCountEl.classList.remove("text-red-500");
               criticalCountEl.classList.add("text-gray-400");
@@ -234,10 +232,12 @@
             }
           }
         } catch (error) {
+          /* Ispis greške u konzoli ako učitavanje statistike ne uspe */
           console.error("Greška pri učitavanju statistike:", error);
         }
       }
 
+      /*Funkcija osvežava više dashboard sekcija odjednom */
       async function refreshDashboardData() {
         await Promise.all([
           loadDashboardStats(),
@@ -245,60 +245,83 @@
         ]);
       }
 
-      // Inicijalizacija Dashboarda
+      /* Inicijalizacija dashboard-a nakon učitavanja stranice */
       document.addEventListener("DOMContentLoaded", async () => {
         const user = JSON.parse(localStorage.getItem("user"));
 
+        /* Ako korisnik ne postoji, prekidamo dalje izvršavanje */
         if (!user) return;
 
+        /* Postavljanje teksta dobrodošlice na osnovu email-a */
         document.getElementById("welcomeText").innerText =
           `Zdravo, ${user.email.split("@")[0]}!`;
+
+        /* Prikaz naziva servisa */
         document.getElementById("serviceNameDisplay").innerText =
           user.serviceName || "Samostalni radnik";
+
+        /* Postavljanje inicijala korisnika */
         document.getElementById("userInitial").innerText =
           user.email[0].toUpperCase();
 
+        /* Ako je korisnik vlasnik servisa */
         if (user.role === "servis") {
+          /* Prikaz administratorskih sekcija */
           document.getElementById("ownerMenu").classList.remove("hidden");
           document.getElementById("statsRevenue").classList.remove("hidden");
           document.getElementById("workersSection").classList.remove("hidden");
+
+          /* Učitavanje radnika */
           loadWorkers();
 
+          /* Ako korisnik ima plan, prikazujemo ga */
           if (user.plan) {
             const badge = document.getElementById("planBadge");
             badge.innerText = `Plan: ${user.plan}`;
             badge.classList.remove("hidden");
+
+            /* Dodavanje boje u zavisnosti od plana */
             badge.classList.add(
-              user.plan === "pro" ? "text-as-accent" : "text-gray-400",
+              user.plan === "pro" ? "text-as-accent" : "text-gray-400"
             );
           }
         }
 
+        /* Učitavanje statistike i narednih termina */
         await refreshDashboardData();
 
+        /* Ako već postoji interval, brišemo ga */
         if (dashboardAutoRefresh) clearInterval(dashboardAutoRefresh);
+
+        /* Postavljamo automatsko osvežavanje na svakih 5 sekundi */
         dashboardAutoRefresh = setInterval(refreshDashboardData, 5000);
       });
 
+      /* Osluškuje promene localStorage-a između tabova */
       window.addEventListener("storage", (event) => {
         if (event.key === "dashboardRefreshSignal") {
           refreshDashboardData();
         }
       });
 
+      /* Kada se korisnik vrati na tab, osvežava podatke */
       document.addEventListener("visibilitychange", () => {
         if (!document.hidden) {
           refreshDashboardData();
         }
       });
 
-      // Funkcija za dodavanje radnika
+      /*Event listener za formu dodavanja radnika */
       document
         .getElementById("addWorkerForm")
         .addEventListener("submit", async (e) => {
+          /* Sprečava reload stranice */
           e.preventDefault();
+
+          /* Učitavanje trenutno prijavljenog vlasnika */
           const owner = JSON.parse(localStorage.getItem("user"));
 
+          /* Podaci za novog radnika */
           const workerData = {
             email: document.getElementById("workerEmail").value,
             password: document.getElementById("workerPass").value,
@@ -307,77 +330,92 @@
             parentId: owner.id,
           };
 
+          /* Slanje zahteva backend-u za registraciju radnika */
           const res = await fetch("http://localhost:3000/api/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(workerData),
           });
 
+          /* Ako je zahtev uspešan */
           if (res.ok) {
-            closeWorkerModal();
-            document.getElementById("addWorkerForm").reset();
-            loadWorkers(); // Osveži listu odmah
+            closeWorkerModal(); /* Zatvara modal */
+            document.getElementById("addWorkerForm").reset(); /* Reset forme */
+            loadWorkers(); /* Osvežavanje liste radnika */
           }
         });
 
+      /* Funkcija učitava naredne termine servisa */
       async function loadUpcomingAppointments() {
         const user = JSON.parse(localStorage.getItem("user"));
+
+        /* Dohvatanje svih termina za konkretan servis */
         const res = await fetch(
-          `http://localhost:3000/api/appointments/${encodeURIComponent(user.serviceName)}`,
+          `http://localhost:3000/api/appointments/${encodeURIComponent(user.serviceName)}`
         );
+
+        /* Pretvaranje odgovora u JSON */
         const appointments = await res.json();
 
+        /* Kontejner za prikaz termina */
         const listContainer = document.getElementById("appointmentsList");
 
-        // 1. Filtriramo samo one koji nisu završeni
-        // 2. Sortiramo ih od najbližeg ka najdaljem
+        /* Filtriranje termina koji nisu završeni, sortiranje i uzimanje prva 3 */
         const upcoming = appointments
           .filter((a) => a.status !== "završeno")
           .sort((a, b) => new Date(a.time) - new Date(b.time))
-          .slice(0, 3); // Uzimamo samo prva 3
+          .slice(0, 3);
 
+        /* Ako nema termina, prikazuje placeholder poruku */
         if (upcoming.length === 0) {
           listContainer.innerHTML =
             '<p class="text-gray-400 text-sm italic">Nema zakazanih servisa.</p>';
           return;
         }
 
-        listContainer.innerHTML = ""; // Brišemo placeholder
+        /* Brišemo stari sadržaj */
+        listContainer.innerHTML = "";
 
+        /* Prolazimo kroz termine i prikazujemo ih */
         upcoming.forEach((app) => {
           const date = new Date(app.time);
+
+          /* Formatiranje datuma */
           const formattedDate = date.toLocaleDateString("sr-RS", {
             day: "2-digit",
             month: "2-digit",
           });
+
+          /* Formatiranje vremena */
           const formattedTime = date.toLocaleTimeString("sr-RS", {
             hour: "2-digit",
             minute: "2-digit",
           });
 
+          /* Dodavanje HTML kartice za svaki termin */
           listContainer.innerHTML += `
             <div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-transparent hover:border-as-accent transition-all group">
-                <div class="flex items-center space-x-4">
-                    <div class="text-center bg-white p-2 rounded-xl shadow-sm min-w-[55px]">
-                        <p class="text-[10px] font-black text-as-accent uppercase">${formattedDate}</p>
-                        <p class="text-sm font-bold">${formattedTime}</p>
-                    </div>
-                    <div>
-                        <p class="font-black text-as-text">${app.car}</p>
-                        <p class="text-xs text-gray-500 font-medium">${app.serviceType}</p>
-                    </div>
+              <div class="flex items-center space-x-4">
+                <div class="text-center bg-white p-2 rounded-xl shadow-sm min-w-[55px]">
+                  <p class="text-[10px] font-black text-as-accent uppercase">${formattedDate}</p>
+                  <p class="text-sm font-bold">${formattedTime}</p>
                 </div>
-                <div class="flex items-center">
-                    <span class="text-[9px] font-black px-3 py-1 rounded-full ${getStatusStyle(app.status)}">
-                        ${app.status.toUpperCase()}
-                    </span>
+                <div>
+                  <p class="font-black text-as-text">${app.car}</p>
+                  <p class="text-xs text-gray-500 font-medium">${app.serviceType}</p>
                 </div>
+              </div>
+              <div class="flex items-center">
+                <span class="text-[9px] font-black px-3 py-1 rounded-full ${getStatusStyle(app.status)}">
+                  ${app.status.toUpperCase()}
+                </span>
+              </div>
             </div>
-        `;
+          `;
         });
       }
 
-      // Pomoćna funkcija za boje statusa
+      /* Pomoćna funkcija za dodelu stilova statusu termina */
       function getStatusStyle(status) {
         switch (status) {
           case "u_toku":
@@ -389,59 +427,76 @@
         }
       }
 
+      /* Funkcija učitava sve radnike servisa */
       async function loadWorkers() {
         const user = JSON.parse(localStorage.getItem("user"));
+
+        /* Slanje zahteva za listu radnika */
         const res = await fetch(
-          `http://localhost:3000/api/workers/${encodeURIComponent(user.serviceName)}`,
+          `http://localhost:3000/api/workers/${encodeURIComponent(user.serviceName)}`
         );
+
+        /* Pretvaranje odgovora u JSON */
         const workers = await res.json();
 
+        /* Pronalazak elemenata na stranici */
         const list = document.getElementById("workersList");
         const limitBadge = document.getElementById("workerLimitBadge");
 
-        // Prikazuje samo ukupan broj bez limita
+        /* Prikaz ukupnog broja radnika */
         limitBadge.innerText = `Ukupno radnika: ${workers.length}`;
 
+        /* Ako nema radnika, prikazuje poruku */
         list.innerHTML = workers.length
           ? ""
           : '<p class="text-gray-400 text-sm italic text-center py-4">Nema dodatih radnika.</p>';
 
+        /* Dodavanje svakog radnika u listu */
         workers.forEach((w) => {
           list.innerHTML += `
-      <div class="flex items-center justify-between p-4 bg-as-bg rounded-2xl group transition hover:bg-white hover:shadow-md border border-transparent hover:border-as-accent">
-          <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center font-bold text-as-accent shadow-sm">${w.email[0].toUpperCase()}</div>
-              <div>
+            <div class="flex items-center justify-between p-4 bg-as-bg rounded-2xl group transition hover:bg-white hover:shadow-md border border-transparent hover:border-as-accent">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center font-bold text-as-accent shadow-sm">
+                  ${w.email[0].toUpperCase()}
+                </div>
+                <div>
                   <p class="font-bold text-sm">${w.email}</p>
                   <p class="text-[10px] text-gray-500 uppercase font-semibold">Radnik</p>
+                </div>
               </div>
-          </div>
-          <button onclick="deleteWorker(${w.id})" class="text-gray-400 hover:text-red-500 p-2 transition transform hover:scale-110">
-              🗑️
-          </button>
-      </div>
-    `;
+              <button onclick="deleteWorker(${w.id})" class="text-gray-400 hover:text-red-500 p-2 transition transform hover:scale-110">
+                🗑️
+              </button>
+            </div>
+          `;
         });
       }
 
+      /* Funkcija briše radnika po ID-u */
       async function deleteWorker(id) {
+        /* Potvrda brisanja */
         if (confirm("Da li ste sigurni da želite da obrišete ovog radnika?")) {
           const res = await fetch(`http://localhost:3000/api/workers/${id}`, {
             method: "DELETE",
           });
+
+          /* Ako je brisanje uspešno, osvežava listu */
           if (res.ok) loadWorkers();
         }
       }
 
+      /* Funkcija za odjavu korisnika */
       function logout() {
         localStorage.removeItem("user");
         window.location.href = "/login.html";
       }
 
+      /* Funkcija otvara modal za dodavanje radnika */
       function openWorkerModal() {
         document.getElementById("workerModal").classList.remove("hidden");
       }
 
+      /* Funkcija zatvara modal za dodavanje radnika */
       function closeWorkerModal() {
         document.getElementById("workerModal").classList.add("hidden");
       }

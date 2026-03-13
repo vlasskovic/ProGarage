@@ -3,9 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AutoServis Pro</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
+    <title>ProGarage</title>
+
+    <!-- Ucitavanje Tailwind CSS biblioteka Play CDN metodom, verzija 3.4.17-->
+    <script src="https://cdn.tailwindcss.com"></script> 
+
+    <!-- Konfiguracija Tailwind-a: dodavanje boja koje koristimo u aplikaciji -->
+    <script>              
       tailwind.config = {
         theme: {
           extend: {
@@ -18,48 +22,53 @@
         },
       };
     </script>
+
+    <!-- Učitavanje SweetAlert2 - Biblioteka za lepša popup obaveštenja [Swal.fire(...) / Swal.mixin(...) UMESTO alert("Greška");] -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
   </head>
   <body class="bg-as-bg text-as-text font-sans">
+
+    <!-- Navigacija ⬇️-->
     <nav class="bg-white shadow-md px-8 py-4 flex justify-between items-center">
+
+      <!-- Leva strana ⬇️-->
       <div class="text-2xl font-extrabold text-as-text">
-        Auto<span class="text-as-accent">Servis</span>.pro
+        Pro<span class="text-as-accent">Garage</span>
       </div>
+
+      <!-- Desna strana ⬇️-->
       <div id="navAuth" class="space-x-6 flex items-center">
-        <a
-          href="/login.html"
-          class="font-semibold hover:text-as-accent transition"
-          >Prijava</a
-        >
-        <a
-          href="/register.html"
-          class="bg-as-accent text-white px-5 py-2 rounded-lg font-bold hover:opacity-90 transition"
-        >
+        <a href="/login.html" class="font-semibold hover:text-as-accent transition">
+          Prijava
+        </a>
+        <a href="/register.html" class="bg-as-accent text-white px-5 py-2 rounded-lg font-bold hover:opacity-90 transition">
           Registruj servis
         </a>
       </div>
     </nav>
 
-    <script>
-      // Mala dopuna za navigaciju
-      document.addEventListener("DOMContentLoaded", () => {
-        const navAuth = document.getElementById("navAuth");
-        const currentUser = JSON.parse(localStorage.getItem("user"));
 
-        if (currentUser) {
-          navAuth.innerHTML = `
-                <span class="text-sm font-medium text-gray-500 italic">Prijavljeni ste kao: ${currentUser.email.split("@")[0]}</span>
-                <a href="/dashboard.html" class="bg-as-accent text-white px-5 py-2 rounded-lg font-bold hover:opacity-90 transition">
-                    Idi na Dashboard
-                </a>
-            `;
+    <!-- JavaScript za navigaciju (desna strana) ⬇️-->
+    <script>
+      /* EventListener ceka da se ucita DOM(Document Object Model) i onda se izvrsava funkcija () => {...}
+         () => {} je isto sto i function() {} ⬇️*/
+      document.addEventListener("DOMContentLoaded", () => {
+        const navAuth = document.getElementById("navAuth"); /* Uzima element koji ima Id "navAuth" i upisuje ga u promenljivu navAuth*/
+        const currentUser = JSON.parse(localStorage.getItem("user")); /* Uzima iz LocalStorage-a User-a, pretvara u JSON i cuva u currentUser promenljivu */
+
+        if (currentUser) {     /* Ako postoji ulogovani korisnik */
+          navAuth.innerHTML = `<span class="text-sm font-medium text-gray-500 italic">Prijavljeni ste kao: ${currentUser.email.split("@")[0]}</span>
+                               <a href="/dashboard.html" class="bg-as-accent text-white px-5 py-2 rounded-lg font-bold hover:opacity-90 transition">
+                                    Idi na Dashboard
+                               </a>`;  /* Menja desnu stranu navigacije */
         }
       });
     </script>
 
-    <main
-      class="max-w-7xl mx-auto px-8 py-20 flex flex-col md:flex-row items-center justify-between"
-    >
+    
+    <main class="max-w-7xl mx-auto px-8 py-20 flex flex-col md:flex-row items-center justify-between">
       <div class="md:w-1/2 space-y-6">
         <h1 class="text-5xl md:text-6xl font-black leading-tight">
           Digitalizujte Vaš
@@ -70,16 +79,10 @@
           AI-ja, pratite troškove i magacin u realnom vremenu.
         </p>
         <div class="flex space-x-4">
-          <a
-            href="/register"
-            class="bg-as-accent text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:scale-105 transition transform"
-          >
+          <a href="/register" class="bg-as-accent text-white px-8 py-4 rounded-xl font-bold text-lg shadow-lg hover:scale-105 transition transform">
             Registruj svoj servis
           </a>
-          <a
-            href="#features"
-            class="border-2 border-as-accent text-as-accent px-8 py-4 rounded-xl font-bold text-lg hover:bg-as-accent hover:text-white transition"
-          >
+          <a href="#features" class="border-2 border-as-accent text-as-accent px-8 py-4 rounded-xl font-bold text-lg hover:bg-as-accent hover:text-white transition">
             Zakazi servis kod nas
           </a>
         </div>
@@ -90,13 +93,8 @@
       </div>
     </main>
 
-    <section
-      id="features"
-      class="max-w-7xl mx-auto px-8 py-12 grid grid-cols-1 md:grid-cols-3 gap-8"
-    >
-      <div
-        class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition group"
-      >
+    <section id="features" class="max-w-7xl mx-auto px-8 py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition group">
         <div class="text-3xl mb-4">📊</div>
         <h3 class="text-xl font-bold mb-2 group-hover:text-as-accent">
           Pametni Dashboard
@@ -105,9 +103,7 @@
           Vizuelni pregled prihoda i rashoda na dnevnom nivou.
         </p>
       </div>
-      <div
-        class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition group"
-      >
+      <div class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition group">
         <div class="text-3xl mb-4">🤖</div>
         <h3 class="text-xl font-bold mb-2 group-hover:text-as-accent">
           AI Zakazivanje
@@ -116,9 +112,7 @@
           Ubaci termin u kalendar prostom porukom ili glasom.
         </p>
       </div>
-      <div
-        class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition group"
-      >
+      <div class="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition group">
         <div class="text-3xl mb-4">📦</div>
         <h3 class="text-xl font-bold mb-2 group-hover:text-as-accent">
           Stanje Magacina
@@ -129,314 +123,321 @@
       </div>
     </section>
 
-    <div
-      class="bg-white p-8 rounded-[2.5rem] shadow-xl mb-10 border border-gray-100 max-w-7xl mx-auto"
-    >
+
+
+
+    
+    <!-- ZAKAZIVANJE ⬇️-->
+    <div class="bg-white p-8 rounded-[2.5rem] shadow-xl mb-10 border border-gray-100 max-w-7xl mx-auto">
+
+      <!-- Flexbox raspored elemenata ⬇️-->
       <div class="flex flex-col lg:flex-row gap-10 ">
+
+        <!-- Levi deo (Zakazivanje putem AI-a) ⬇️-->
         <div class="lg:w-1/3 space-y-4 border-r border-gray-100 pr-8">
+          <!-- Naslov levog dela ⬇️-->
           <h3 class="text-xl font-black italic">
             Zakazivanje putem  <span class="text-as-accent">AI-a</span>
           </h3>
-          <textarea
-            id="aiTaskInput"
-            rows="3"
-            placeholder="Napišite zahtev..."
-            class="w-full p-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-as-accent outline-none text-sm"
-          ></textarea>
-          <button
-            onclick="fillFormWithAI()"
-            id="aiBtn"
-            class="w-full bg-as-text text-white py-4 rounded-2xl font-black text-xs hover:bg-as-accent transition-all"
-          >
+
+          <!-- Text-box za zakazuivanje uz pomoc AI-a ⬇️-->
+          <textarea id="aiTaskInput" rows="3" placeholder="Napišite zahtev..." class="w-full p-4 bg-gray-50 rounded-2xl border-2 border-transparent focus:border-as-accent outline-none text-sm"></textarea>
+
+          <!-- Dugme za analiziranje uz pomoc AI-a preko funkcije⬇️-->
+          <button onclick="fillFormWithAI()" id="aiBtn" class="w-full bg-as-text text-white py-4 rounded-2xl font-black text-xs hover:bg-as-accent transition-all">
             🪄 ANALIZIRAJ
           </button>
         </div>
 
+        <script> /* FUNKCIJA za popunjavanje forme uz pomoc AI-a ⬇️ */
+          async function fillFormWithAI() {
+            const inputField = document.getElementById("aiTaskInput"); /* U promenljivu inputField upisuje sve iz Text-box-a */
+            const aiBtn = document.getElementById("aiBtn"); /* Promenljiva aiBtn koja je u stvari dugme Analiziraj */
+            
+            if (!inputField.value) /* Ako ne postoji nista u Text-box-u radi sledece:*/{
+                /* Vraca popup window (SweetAlert2) sa obavestenjem da nije unet tekst */
+                return notify("Prazan unos", "Molimo Vas unesite tekst (npr. Mali servis za Golf 7 u ponedeljak) kako bi AI mogao da ga analizira.", "warning");
+            }
+            
+            aiBtn.innerText = "⏳ ANALIZIRAM..."; /* Menja tekst unutar button-a */
+            aiBtn.disabled = true;  /* Ne dozvoljava da se button klikne tokom analiziranja */
+            
+            try {       /* Slanje HTTP request-a serveru na /api/ai/parse-and-find-service   await za cekanje odgovora servera ⬇️*/
+                const response = await fetch("http://localhost:3000/api/ai/parse-and-find-service", { 
+                    method: "POST", /* POST kaze serveru da se podaci salju */
+                    headers: { "Content-Type": "application/json" }, /* Ovim se serveru "govori" da su podaci tipa JSON */
+                    body: JSON.stringify({ text: inputField.value }), /* Pretvara "text: inputField.value" u JSON string i šalje ga serveru. */
+                });
+                
+                const data = await response.json(); /* data čeka JSON odgovor (Posto je promenljiva response "raw" HTTP odgovor mora da se prebaci u JSON tip podataka) */
+                
+                /* Popunjavanje forme za zakazivanje onim sto je dobijeno od servera ⬇️*/
+                if (data.aiRecommendation) { /* Proverava da li postoji u data aiRecommendation */
+                    document.getElementById("f-car").value = data.aiRecommendation.car || ""; /* Popunjava polje Vozilo*/
+                    document.getElementById("f-service").value = data.aiRecommendation.serviceType || ""; /* Popunjava polje Usluga*/
+                    document.getElementById("f-client").value = data.aiRecommendation.client !== "Nepoznato" ? data.aiRecommendation.client : "" ; /* Popunjava polje Klijent*/
+                    if (data.aiRecommendation.time) { /* Ako datum i vreme postoji*/
+                        document.getElementById("f-time").value = data.aiRecommendation.time; /* Popunjava datum i vreme */
+                    }
+                    
+                    /* Kreiranje popup-a preko SweetAlert2 ⬇️*/
+                    const obavestenje = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                    /* Prikazivanje popup-a (SweetAlert2) ⬇️*/
+                    obavestenje.fire({
+                        icon: 'success',
+                        title: 'AI je uspešno popunio formu'
+                    });
+                }
+                
+                /* Pozivanje funkcije za ucitavanje servisa koji nude zadatu uslugu ⬇️*/
+                renderServiceCards(data.matchingServices);
+            } 
+            /* Ukoliko dodje do greske prilikom izvsavanja try bloka radi sledece ⬇️*/
+            catch (err) { 
+                /* U konzoli ispisuje gresku koja se dogodila ⬇️*/
+                console.error("Greška:", err); 
+                /* Izbacuje popup (SweetAlert2) za korisnika da se greska dogodila ⬇️*/
+                notify("Greška", "Sistem trenutno ne može da obradi Vaš zahtev. Proverite da li je server pokrenut.", "error"); 
+            } 
+            /* Kraj bloka ⬇️*/
+            finally {
+                aiBtn.innerText = "🪄 ANALIZIRAJ"; /* Vraca tekst u dugmetu na prvobitni */
+                aiBtn.disabled = false; /* Ponovo omogucuje dugme */
+            }
+          }
+        </script>
+        <script> /* FUNKCIJA za ucitavanje servisa koji nude zadatu uslugu ⬇️*/
+          function renderServiceCards(services) { /* Funkcija prima parametar services koji predstavlja odabranu uslugu*/
+            const grid = document.getElementById("servicesGrid"); /* Grid u kojem se pojavljuju kartice za servise (po default-u je skriven preko Sekcije u kojoj je)*/
+            const section = document.getElementById("serviceRecommendations"); /* Sekcija u kojoj se nalazi Grid (po default-u je skrivena preko klase) */
+            const select = document.getElementById("f-selected-service"); /* Pronalazi meni za selektovanje servisa */
+        
+            if (!grid || !section || !select) return; /* Ukoliko makar jedan od ovih elemenata nije pronadjen na stranici prekida funkciju */
+        
+            grid.innerHTML = ""; /* Za svaki slucaj ako se desi da je grid null */
+            select.innerHTML = '<option value="">-- Izaberite servis --</option>'; /* Resetovanje menija na pocetnu opciju */
+        
+            /* Proverava da li postoji services i da li je niz prazan i ako su oba ispunjena izvrsava ⬇️*/
+            if (services && services.length > 0) { 
+              
+              section.classList.remove("hidden"); /* Uklanja klasu hidden sa sekcije da bi se prikazala na ekranu */
+              
+              services.forEach(s => {     /* forEach prolazi kroz svaki element "s" niza services */
+                const opt = document.createElement("option"); /* Kreira opciju za taj servis*/
+                opt.value = s.serviceName; /* U vrednost opcije upisuje ime servisa zbog slanja kasnije */
+                /*⬇️ Ispisuje ime servisa na opciji + ako je pun doda da je servis pun i ispise prvi datum kad je slobodan / ako nije pun ispise SLOBODAN*/
+                opt.text = s.serviceName + (s.isFull ? ` (PUN - sledeći slobodan ${s.nextAvailable})` : ` (SLOBODAN)`); 
+                opt.disabled = s.isFull; /* Ukoliko je servis pun onemoguci opciju za taj servis */
+                select.add(opt); /* Dodaje opciju u padajuci meni za biranje servisa */
+
+                /* U grid dodaje karticu sa podacima isto kao u opt ⬇️*/
+                grid.innerHTML += ` 
+                  <div onclick="${s.isFull ? '' : `selectService('${s.serviceName}')`}" 
+                    class="relative p-4 rounded-2xl border-2 transition-all flex justify-between items-center 
+                      ${s.isFull ? 'bg-gray-100 opacity-60 border-gray-200 cursor-not-allowed' : 'bg-white border-gray-100 hover:border-as-accent cursor-pointer shadow-sm shadow-as-accent/5'}">
+                      
+                      <div class="text-left">
+                        <p class="font-black text-sm">${s.serviceName}</p>
+                        <p class="text-[10px] font-bold ${s.isFull ? 'text-red-500' : 'text-green-600'} uppercase">
+                          ${s.isFull ? `POPUNJENO - sledeći slobodan: ${s.nextAvailable}` : `SLOBODAN - Cena: ${s.price} €`}
+                        </p>
+                      </div>
+                    <span>${s.isFull ? '🚫' : (s.plan === 'pro' ? '⭐' : '✅')}</span>
+                  </div> `;
+                });
+            }
+            else {/* Ukoliko services ne postoji ili je niz prazan sakriva sekciju sa karticama⬇️*/
+                section.classList.add("hidden");
+            }
+          }
+        </script>
+
+
+        <script>  /* FUNKCIJA za utomatsko popunjavanje liste kada korisnik klikne na karticu ⬇️*/
+          function selectService(name) {    /* Prosledjuje se ime servisa */
+            
+            const select = document.getElementById('f-selected-service'); /* Pronalazi meni za selektovanje servisa */
+            if (select) select.value = name;  /* Proverava da li se poklapa sa prosledjenim imenom */
+                  
+            /* querySelectorAll - trazi sve elemente tipa div u Grid-u sa karticama ⬇️*/
+            document.querySelectorAll('#servicesGrid div').forEach(card => { /* Prolazi promenljivom card kroz listu kartica jednu po jednu*/
+              card.classList.remove('ring-2', 'ring-as-accent', 'bg-blue-50/20'); /* Uklanja css koji oznacava da je kartica selektovana */
+              
+              if (card.innerText.includes(name)) { /* Ukoliko kartica sadrzi ime servisa koje je prosledjeno */
+                  card.classList.add('ring-2', 'ring-as-accent', 'bg-blue-50/20');  /* dodaje css koji oznacava da je kartica selektovana*/
+              }
+            });
+          }
+        </script>
+
+
         <div class="lg:w-2/3">
-              <h3 class="text-xl font-black italic mb-4">
-            Rucno zakazivanje 
-          </h3>
-          <form
-            id="manualAppointmentForm"
-            class="grid grid-cols-1 md:grid-cols-2 gap-4"
-          >
-            <input
-              type="text"
-              id="f-car"
-              placeholder="Vozilo"
-              required
-              class="p-3 bg-gray-50 border rounded-xl outline-none focus:border-as-accent"
-            />
-            <input
-              type="text"
-              id="f-service"
-              placeholder="Usluga"
-              required
-              class="p-3 bg-gray-50 border rounded-xl outline-none focus:border-as-accent"
-            />
-            <input
-              type="datetime-local"
-              id="f-time"
-              required
-              class="p-3 bg-gray-50 border rounded-xl outline-none focus:border-as-accent"
-            />
-            <input
-              type="text"
-              id="f-client"
-              placeholder="Klijent"
-              class="p-3 bg-gray-50 border rounded-xl outline-none focus:border-as-accent"
-            />
+
+          <h3 class="text-xl font-black italic mb-4">Rucno zakazivanje</h3>
+
+          <form id="manualAppointmentForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="text" id="f-car" placeholder="Vozilo" required class="p-3 bg-gray-50 border rounded-xl outline-none focus:border-as-accent"/>
+            <input type="text" id="f-service" placeholder="Usluga" required class="p-3 bg-gray-50 border rounded-xl outline-none focus:border-as-accent"/>
+            <input type="datetime-local" id="f-time" required class="p-3 bg-gray-50 border rounded-xl outline-none focus:border-as-accent"/>
+            <input type="text" id="f-client" placeholder="Klijent" class="p-3 bg-gray-50 border rounded-xl outline-none focus:border-as-accent"/>
 
             <div class="md:col-span-2">
-              <label class="text-[10px] font-black text-gray-400 uppercase ml-2"
-                >Izaberite Servis</label
-              >
-              <select
-                id="f-selected-service"
-                required
-                class="w-full p-3 bg-white border-2 border-gray-100 rounded-xl outline-none focus:border-as-accent font-bold"
-              >
+              <label class="text-[10px] font-black text-gray-400 uppercase ml-2">Izaberite Servis</label>
+              <select id="f-selected-service" required class="w-full p-3 bg-white border-2 border-gray-100 rounded-xl outline-none focus:border-as-accent font-bold">
                 <option value="">
                   -- Prvo unesite uslugu ili koristite AI --
                 </option>
               </select>
             </div>
 
-            <div
-              id="serviceRecommendations"
-              class="hidden md:col-span-2 space-y-3"
-            >
-              <p
-                class="text-[10px] font-black text-as-accent uppercase tracking-widest"
-              >
-                Rezultati AI pretrage:
-              </p>
-              <div
-                id="servicesGrid"
-                class="grid grid-cols-1 md:grid-cols-2 gap-3"
-              ></div>
+            <div id="serviceRecommendations" class="hidden md:col-span-2 space-y-3">
+              <p class="text-[10px] font-black text-as-accent uppercase tracking-widest">Rezultati AI pretrage:</p>
+              <!-- Ovde kasnije izbacuje servise kada postoje oni koji nude zadatu uslugu ⬇️-->
+              <div id="servicesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
             </div>
 
-            <button
-              type="button"
-              id="subBtn"
-              onclick="submitForm()"
-              class="md:col-span-2 bg-as-accent text-white py-4 rounded-2xl font-black shadow-lg hover:opacity-90 transition-all"
-            >
+            <!-- Dugme za zakazivanje termina preko submitForm() funkcije ⬇️-->
+            <button type="button" id="subBtn" onclick="submitForm()" class="md:col-span-2 bg-as-accent text-white py-4 rounded-2xl font-black shadow-lg hover:opacity-90 transition-all">
               ZAKAŽI TERMIN
             </button>
           </form>
         </div>
+
+        
+        <script> /* FUNKCIJA za zakazivanje termina ⬇️*/
+          /*⬇️ async funkcija zato sto se koristi await fetch (Funkcija salje zahtev serveru, ceka odgovor i nastavlja se tek kada stigne odgovor) */
+          async function submitForm(){ 
+            const submitBtn = document.getElementById('subBtn'); /* Pronalazi dugme "Zakaži termin" */
+            /* Pravljenje objekta (paket podataka koji se salje u bazu) */
+            const data = {
+              serviceName: document.getElementById("f-selected-service").value, /* Prepisuje unet Servis u entitet serviceName*/
+              car: document.getElementById("f-car").value, /* Prepisuje uneto Vozilo u entitet car*/
+              serviceType: document.getElementById("f-service").value, /* Prepisuje unetu Uslugu u entitet serviceType*/
+              time: document.getElementById("f-time").value, /* Prepisuje uneto Vreme u entitet time*/
+              client: document.getElementById("f-client").value || "Gost", /* Prepisuje ime klijenta u entitet client*/
+            };
+          
+            if (!data.serviceName) /* Ukoliko nije izabran servis ⬇️*/
+            { 
+              /* Vraca popup window (SweetAlert2) sa obavestenjem da nije odabran servis */
+              return notify("Izaberite servis", "Morate odabrati dostupan servis sa liste.", "warning");
+            }
+          
+            /* Vizuelni feedback na dugmetu ⬇️*/
+            submitBtn.disabled = true; /* Onemogucuje dugme */
+            submitBtn.innerText = "ZAKAZIVANJE..."; /* Menja tekst */
+          
+            try {     /* Slanje HTTP request-a serveru na /api/appointments    await za cekanje odgovora servera ⬇️*/
+                const res = await fetch("http://localhost:3000/api/appointments", {
+                    method: "POST",  /* POST kaze serveru da se podaci salju */
+                    headers: { "Content-Type": "application/json" },  /* Ovim se serveru "govori" da su podaci tipa JSON */
+                    body: JSON.stringify(data),  /* Pretvara JavaScript objekat "data" u JSON string i šalje ga serveru. */
+                });
+              
+                /* Provera da li je server uspešno odgovorio */
+                if (res.ok) {
+                    /* Prikazivanje popup-a (SweetAlert2) ⬇️*/
+                    Swal.fire({
+                        title: 'Uspešno zakazano!',
+                        text: `Termin za ${data.car} je zabeležen u sistemu.`,
+                        icon: 'success',
+                        confirmButtonColor: '#6599d3'
+                    });
+                  
+                    resetFormAfterSuccess(); /* Pozivanje funkcije za ciscenje forme */
+                } 
+                else /* Ukoliko server ne odgovori */
+                { /* Vraca popup window (SweetAlert2) sa obavestenjem da je doslo do greske ⬇️*/
+                  notify("Greška", "Server nije mogao da zakaže termin.", "error");
+                }
+            } 
+            catch (err) /* Ukoliko dodje do greske u try bloku⬇*/
+            { /* Vraca popup window (SweetAlert2) sa obavestenjem da je doslo do greske ⬇️*/
+              notify("Greška na mreži", "Proverite konekciju sa serverom.", "error");
+            } 
+            finally /* Na kraju posle try/catch blokova vraca dugme za zakazivanje termina na pocetne vrednosti ⬇️*/
+            {
+                submitBtn.disabled = false;  
+                submitBtn.innerText = "ZAKAŽI TERMIN";
+            }
+          };
+        </script>
+
+        <script> /* FUNKCIJA za ciscenje forme ⬇️*/
+          function resetFormAfterSuccess() {
+            
+            document.getElementById("manualAppointmentForm").reset(); /* Resetovanje polja u formi */
+                  
+            document.getElementById("aiTaskInput").value = ""; /* Resetovanje polja za tekst za AI */
+                  
+            
+            const section = document.getElementById("serviceRecommendations"); /* Pronalazenje sekcije sa Gridom za kartice i tekstom */
+            const grid = document.getElementById("servicesGrid"); /* Pronalazenje grid-a sa karticam */
+            const select = document.getElementById("f-selected-service"); /* Pronalazenje menija za selektovanje servisa */
+                  
+            if (section) section.classList.add("hidden"); /* Sakrivanje sekcije sa Gridom */
+            if (grid) grid.innerHTML = "";  /* Praznjenje Grida u kom su kartice */
+            if (select) select.innerHTML = '<option value="">-- Prvo unesite uslugu ili koristite AI --</option>'; /* Vracnje menija na prvobitnu vrednost */
+          }
+        </script>  
+
       </div>
     </div>
   </body>
 
-<script>
-// Glavna funkcija za AI dugme
-// Pomoćna funkcija za lepša obaveštenja
-const notify = (title, text, icon = 'success') => {
-    Swal.fire({
-        title: title,
-        text: text,
-        icon: icon,
-        confirmButtonColor: '#6599d3',
-        borderRadius: '1rem'
-    });
-};
-
-async function fillFormWithAI() {
-    const inputField = document.getElementById("aiTaskInput");
-    const aiBtn = document.getElementById("aiBtn");
-    
-    if (!inputField.value) {
-        return notify("Prazan unos", "Molimo Vas unesite tekst (npr. Mali servis za Golf 7 u ponedeljak) kako bi AI mogao da ga analizira.", "warning");
-    }
-
-    aiBtn.innerText = "⏳ ANALIZIRAM...";
-    aiBtn.disabled = true;
-
-    try {
-        const response = await fetch("http://localhost:3000/api/ai/parse-and-find-service", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ text: inputField.value }),
-        });
-
-        const data = await response.json();
-
-        if (data.aiRecommendation) {
-            document.getElementById("f-car").value = data.aiRecommendation.car || "";
-            document.getElementById("f-service").value = data.aiRecommendation.serviceType || "";
-            document.getElementById("f-client").value = data.aiRecommendation.client !== "Nepoznato" ? data.aiRecommendation.client : "";
-            if (data.aiRecommendation.time) {
-                document.getElementById("f-time").value = data.aiRecommendation.time;
-            }
-            
-            // Mala zdravica (Toast) da je analiza uspela
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true
-            });
-            Toast.fire({
-                icon: 'success',
-                title: 'AI je uspešno popunio formu'
-            });
-        }
-
-        renderServiceCards(data.matchingServices);
-
-    } catch (err) {
-        console.error("Greška:", err);
-        notify("Greška", "Sistem trenutno ne može da obradi Vaš zahtev. Proverite da li je server pokrenut.", "error");
-    } finally {
-        aiBtn.innerText = "🪄 ANALIZIRAJ";
-        aiBtn.disabled = false;
-    }
-}
-
-// ... (renderServiceCards i selectService ostaju isti) ...
+  <script> 
+  /* Kreiranje popup-a preko SweetAlert2 ⬇️*/
+  const notify = (title, text, icon = 'success') => {
+      Swal.fire({
+          title: title,
+          text: text,
+          icon: icon,
+          confirmButtonColor: '#6599d3',
+          borderRadius: '1rem'
+      });
+  };
 
 
-
-function renderServiceCards(services) {
-    const grid = document.getElementById("servicesGrid");
-    const section = document.getElementById("serviceRecommendations");
-    const select = document.getElementById("f-selected-service");
-
-    if (!grid || !section || !select) return;
-
-    grid.innerHTML = "";
-    select.innerHTML = '<option value="">-- Izaberite servis --</option>';
-
-    if (services && services.length > 0) {
-        section.classList.remove("hidden");
-        services.forEach(s => {
-            const opt = document.createElement("option");
-            opt.value = s.serviceName;
-            opt.text = s.serviceName + (s.isFull ? ` (PUN - slobodan ${s.nextAvailable})` : '');
-            opt.disabled = s.isFull;
-            select.add(opt);
-
-            grid.innerHTML += `
-                <div onclick="${s.isFull ? '' : `selectService('${s.serviceName}')`}" 
-                    class="relative p-4 rounded-2xl border-2 transition-all flex justify-between items-center 
-                    ${s.isFull ? 'bg-gray-100 opacity-60 border-gray-200 cursor-not-allowed' : 'bg-white border-gray-100 hover:border-as-accent cursor-pointer shadow-sm shadow-as-accent/5'}">
-                    <div class="text-left">
-                        <p class="font-black text-sm">${s.serviceName}</p>
-                        <p class="text-[10px] font-bold ${s.isFull ? 'text-red-500' : 'text-as-accent'} uppercase">
-                            ${s.isFull ? `POPUNJENO - SLOBODAN: ${s.nextAvailable}` : `Cena: ${s.price} €`}
-                        </p>
-                    </div>
-                    <span>${s.isFull ? '🚫' : (s.plan === 'pro' ? '⭐' : '✅')}</span>
-                </div>
-            `;
-        });
-    } else {
-        section.classList.add("hidden");
-    }
-}
-
-function selectService(name) {
-    const select = document.getElementById('f-selected-service');
-    if (select) select.value = name;
-    
-    document.querySelectorAll('#servicesGrid div').forEach(card => {
-        card.classList.remove('ring-2', 'ring-as-accent', 'bg-blue-50/20');
-        if (card.innerText.includes(name)) {
-            card.classList.add('ring-2', 'ring-as-accent', 'bg-blue-50/20');
-        }
-    });
-}
-
-function resetFormAfterSuccess() {
-    // 1. Resetuj polja forme
-    document.getElementById("manualAppointmentForm").reset();
-    
-    // 2. Resetuj AI tekstualno polje
-    document.getElementById("aiTaskInput").value = "";
-    
-    // 3. Sakrij sekciju sa AI preporukama (kartice servisa)
-    const section = document.getElementById("serviceRecommendations");
-    const grid = document.getElementById("servicesGrid");
-    const select = document.getElementById("f-selected-service");
-
-    if (section) section.classList.add("hidden");
-    if (grid) grid.innerHTML = "";
-    if (select) select.innerHTML = '<option value="">-- Prvo unesite uslugu ili koristite AI --</option>';
-}
-
-async function submitForm(){
-    
-    const submitBtn = document.getElementById('subBtn');
-    const data = {
-        serviceName: document.getElementById("f-selected-service").value,
-        car: document.getElementById("f-car").value,
-        serviceType: document.getElementById("f-service").value,
-        time: document.getElementById("f-time").value,
-        client: document.getElementById("f-client").value || "Gost",
-    };
-
-    if (!data.serviceName) {
-        return notify("Izaberite servis", "Morate odabrati dostupan servis sa liste.", "warning");
-    }
-
-    // Vizuelni feedback na dugmetu
-    submitBtn.disabled = true;
-    submitBtn.innerText = "ZAKAZIVANJE...";
-
-    try {
-        const res = await fetch("http://localhost:3000/api/appointments", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-        });
-
-        if (res.ok) {
-            // Umesto reloada, samo obavestimo i očistimo
-            Swal.fire({
-                title: 'Uspešno zakazano!',
-                text: `Termin za ${data.car} je zabeležen u sistemu.`,
-                icon: 'success',
-                confirmButtonColor: '#6599d3'
-            });
-
-            resetFormAfterSuccess(); // Pozivamo funkciju za čišćenje
-        } else {
-            notify("Greška", "Server nije mogao da zakaže termin.", "error");
-        }
-    } catch (err) {
-        notify("Greška na mreži", "Proverite konekciju sa serverom.", "error");
-    } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerText = "ZAKAŽI TERMIN";
-    }
-};
-
-
-document.getElementById('f-service').addEventListener('input', debounce(async (e) => {
+  /* Deo koda koji omogucava AUTOMATSKU PRETRAGU SERVISA TOKOM KUCANJA naziva Usluge ⬇️*/
+  /* Nalazi se Text-box za unos Usluge, dodaje se event listener koji ceka input   |   Poziva se funkcija debounce() */
+  document.getElementById('f-service').addEventListener('input', debounce(async (e) => {  /* async omogucava koriscenje await, a (e) je event */
+    /* Uzimanje unete vrednosti ⬇️*/
     const serviceVal = e.target.value;
-    if (serviceVal.length < 3) return;
+    
+    if (serviceVal.length < 3) return; /* Proverava duzinu teksta */
 
-    try {
-        const res = await fetch('http://localhost:3000/api/ai/parse-and-find-service', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: `Usluga: ${serviceVal}` })
-        });
-        const data = await res.json();
-        renderServiceCards(data.matchingServices);
-    } catch (err) { console.error("Greška pri pretrazi."); }
-}, 800));
+    try {     /* U res se upisuje rezultat slanja HTTP request-a */
+      const res = await fetch('http://localhost:3000/api/ai/parse-and-find-service', {
+          method: 'POST', /* POST kaze serveru da se podaci salju */
+          headers: { 'Content-Type': 'application/json' }, /* Ovim se serveru "govori" da su podaci tipa JSON */
+          body: JSON.stringify({ text: `Usluga: ${serviceVal}` }) /* Pretvara text: `Usluga: ${serviceVal}` u JSON string i šalje ga serveru. */
+      });
 
-function debounce(func, wait) {
-    let timeout;
-    return function(...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-}
-</script>
+      /*⬇️ data čeka rezultat i pretvara ga u JSON(Posto je promenljiva response "raw" HTTP odgovor mora da se prebaci u JSON tip podataka) */
+      const data = await res.json(); 
+
+      /* Pozivanje funkcije za ucitavanje servisa koji nude zadatu uslugu ⬇️*/
+      renderServiceCards(data.matchingServices);
+    } 
+    catch (err) { console.error("Greška pri pretrazi."); } /* Ukoliko dodje do neke greske ispisuje obavestenje u konzoli*/
+
+  }, 800)); /* Setovanje kasnjenja na 800ms za debounce() */
+
+
+  /* FUNKCIJA za  odlaganje izvrsavanja neke druge funkcije (za pretragu)*/
+  function debounce(func, wait) {  /* [func] - funkcija koju odlazemo za [wait] milisekundi  */
+      let timeout;
+      return function(...args) {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+  }
+  </script>
+
 </html>

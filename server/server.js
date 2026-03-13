@@ -347,7 +347,7 @@ app.patch('/api/inventory/:id/stock', (req, res) => {
 const Groq = require('groq-sdk');
 
 // Kreiranje Groq klijenta.
-// Ovde bi u pravoj aplikaciji API ključ trebalo čuvati u .env fajlu, a ne direktno u kodu.
+// Ovde bi u pravoj aplikaciji trebalo čuvati API ključ
 const groq = new Groq({ apiKey: "OVDE_JE_POTREBNO_UNETI_API_KLJUC"});
 
 

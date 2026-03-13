@@ -4,53 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Magacin | ProGarage</title>
+
+    <!-- Ucitavanje Tailwind CSS biblioteka Play CDN metodom, verzija 3.4.17-->
     <script src="https://cdn.tailwindcss.com"></script>
+
+     <!-- Konfiguracija Tailwind-a: dodavanje boja koje koristimo u aplikaciji -->
     <script>
         tailwind.config = {
-            theme: { extend: { colors: { 'as-bg': '#dde0e4', 'as-accent': '#6599d3', 'as-text': '#000000' } } }
+            theme: {
+                extend: {
+                    colors: {
+                        'as-bg': '#dde0e4',      
+                        'as-accent': '#6599d3',  
+                        'as-text': '#000000'     
+                    }
+                }
+            }
         }
     </script>
 </head>
-<body class="bg-as-bg font-sans">
 
-    <div class="flex h-screen">
+<body class="bg-as-bg font-sans"> 
+    <div class="flex h-screen"> 
         <aside class="w-64 bg-white shadow-xl flex flex-col p-6">
-            <div class="text-2xl font-black mb-10 text-as-text italic">Pro<span class="text-as-accent">Garage</span></div>
+ 
+            <div class="text-2xl font-black mb-10 text-as-text italic">
+                Pro<span class="text-as-accent">Garage</span>
+            </div>
+ 
             <nav class="space-y-4 flex-1">
                 <a href="/dashboard.html" class="block p-3 rounded-xl hover:bg-gray-100 transition">🏠 Dashboard</a>
                 <a href="/calendar.html" class="block p-3 rounded-xl hover:bg-gray-100 transition font-bold">📅 Kalendar</a>
                 <a href="/inventory.html" class="block p-3 rounded-xl bg-as-accent text-white font-bold shadow-md">📦 Magacin</a>
             </nav>
-            <button onclick="logout()" class="text-red-500 font-bold p-3 text-left hover:bg-red-50 rounded-xl transition">🚪 Odjavi se</button>
+ 
+            <button onclick="logout()" class="text-red-500 font-bold p-3 text-left hover:bg-red-50 rounded-xl transition">
+                🚪 Odjavi se
+            </button>
         </aside>
-
-        <main class="flex-1 overflow-y-auto p-8">
+ 
+        <main class="flex-1 overflow-y-auto p-8"> 
             <header class="flex justify-between items-center mb-10">
-                <div>
-                    <h1 class="text-3xl font-black">Magacin <span class="text-as-accent text-xl">/ Upravljanje delovima</span></h1>
-                    <p class="text-gray-500 text-sm font-medium">Pregled zaliha i inteligentna nabavka</p>
+                <div> 
+                    <h1 class="text-3xl font-black">
+                        Magacin <span class="text-as-accent text-xl">/ Upravljanje delovima</span>
+                    </h1> 
+                    <p class="text-gray-500 text-sm font-medium">
+                        Pregled zaliha i inteligentna nabavka
+                    </p>
                 </div>
+
+                <!-- Dugme za otvaranje kartice za dodavanje novog artikla -->
                 <button onclick="openModal()" class="bg-as-accent text-white px-6 py-3 rounded-2xl font-black shadow-lg hover:scale-105 transition-all">
                     ➕ NARUČI ARTIKAL
                 </button>
             </header>
 
+            <!-- AI sekcija za preporuku naručivanja -->
             <div id="AI" class="mb-10 bg-gradient-to-br from-gray-900 to-as-text text-white p-8 rounded-[2rem] shadow-2xl relative overflow-hidden">
                 <div class="absolute top-0 right-0 p-8 opacity-10 text-8xl">🤖</div>
+ 
                 <div class="relative z-10">
                     <h3 class="text-xl font-black mb-2 flex items-center italic">
-                        AI Preporuka za naručivanje 
+                        AI Preporuka za naručivanje
                     </h3>
-                    <p class="text-white/60 text-sm mb-1 max-w-xl">Analiza zakazanih servisa za narednih 7 dana i poređenje sa trenutnim stanjem u magacinu.</p>
-                    <p class="text-white/20 text-xs mb-6 max-w-xl">*AI Moze da pravi greške, proverite pre naručivanja!</p>
-                    
+ 
+                    <p class="text-white/60 text-sm mb-1 max-w-xl">
+                        Analiza zakazanih servisa za narednih 7 dana i poređenje sa trenutnim stanjem u magacinu.
+                    </p>
+ 
+                    <p class="text-white/20 text-xs mb-6 max-w-xl">
+                        *AI Moze da pravi greške, proverite pre naručivanja!
+                    </p>
+
+                    <!-- Kontejner u koji JavaScript ubacuje AI preporuke -->
                     <div id="aiDemandList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+                        <!-- Placeholder za kartice dok se podaci učitavaju -->
                         <div class="animate-pulse bg-white/5 h-20 rounded-2xl border border-white/10"></div>
                         <div class="animate-pulse bg-white/5 h-20 rounded-2xl border border-white/10"></div>
                     </div>
                 </div>
             </div>
 
+            <!-- Tabela sa artiklima iz magacina -->
             <div class="bg-white rounded-[2rem] shadow-sm overflow-hidden border border-white">
                 <table class="w-full text-left">
                     <thead>
@@ -61,49 +98,78 @@
                             <th class="p-6 text-right">Akcije</th>
                         </tr>
                     </thead>
+                    <!-- Telo tabele koje JavaScript popunjava -->
                     <tbody id="inventoryTable" class="divide-y divide-gray-50">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
         </main>
     </div>
 
+    <!-- Kartica za dodavanje novog artikla -->
     <div id="addPartModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
         <div class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-8 overflow-hidden">
-            <h3 class="text-2xl font-black mb-6">Novi <span class="text-as-accent">Artikal</span></h3>
+ 
+            <h3 class="text-2xl font-black mb-6">
+                Novi <span class="text-as-accent">Artikal</span>
+            </h3>
+ 
             <form id="addPartForm" class="space-y-4">
-                <input type="text" id="p-name" placeholder="Naziv dela (npr. Ulje 5W30)" required 
-                    class="w-full p-4 bg-gray-50 border-2 border-transparent rounded-2xl outline-none focus:border-as-accent transition">
+ 
+                <input type="text" id="p-name" placeholder="Naziv dela (npr. Ulje 5W30)" required class="w-full p-4 bg-gray-50 border-2 border-transparent rounded-2xl outline-none focus:border-as-accent transition">
+ 
                 <div class="grid grid-cols-2 gap-4">
                     <input type="number" id="p-qty" placeholder="Količina" required class="w-full p-4 bg-gray-50 border-2 border-transparent rounded-2xl outline-none focus:border-as-accent transition">
                     <input type="number" id="p-min" placeholder="Min. Limit" required class="w-full p-4 bg-gray-50 border-2 border-transparent rounded-2xl outline-none focus:border-as-accent transition">
                 </div>
+ 
                 <input type="number" id="p-price" placeholder="Prodajna cena (€)" required class="w-full p-4 bg-gray-50 border-2 border-transparent rounded-2xl outline-none focus:border-as-accent transition">
-                
-                <div class="flex space-x-3 pt-4">
-                    <button type="button" onclick="closeModal()" class="flex-1 py-4 font-bold text-gray-400">Odustani</button>
-                    <button type="submit" class="flex-1 bg-as-accent text-white font-bold py-4 rounded-2xl shadow-lg">SAČUVAJ</button>
+ 
+                <div class="flex space-x-3 pt-4"> 
+                    <button type="button" onclick="closeModal()" class="flex-1 py-4 font-bold text-gray-400">
+                        Odustani
+                    </button>
+ 
+                    <button type="submit" class="flex-1 bg-as-accent text-white font-bold py-4 rounded-2xl shadow-lg">
+                        SAČUVAJ
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
+        /* Učitavanje prijavljenog korisnika iz localStorage-a */
         const user = JSON.parse(localStorage.getItem('user'));
+
+        /* Ako korisnik nije prijavljen, preusmerava ga na login stranicu */
         if (!user) window.location.href = '/login.html';
 
-        if(user.plan === "start"){
+        /* Ako korisnik ima START plan, sakriva AI sekciju */
+        if (user.plan === "start") {
             document.getElementById("AI").classList.add("hidden");
         }
 
+        /**
+         * Funkcija učitava sve artikle iz magacina sa servera
+         */
         async function loadInventory() {
-            const res = await fetch(`http://localhost:3000/api/inventory/${encodeURIComponent(user.serviceName)}`);
+            /* Slanje HTTP GET zahteva serveru za magacin konkretnog servisa */
+            const res = await fetch(`http://localhost:3000/api/inventory/${encodeURIComponent(user.serviceName)}`); /* encodeURIComponent pretvara tekst u format bezbedan za URL. */
+
+            /* Pretvaranje odgovora u JSON */
             const items = await res.json();
+
+            /* Pronalazak tbody elementa tabele */
             const tbody = document.getElementById('inventoryTable');
+
+            /* Briše prethodni sadržaj tabele pre novog punjenja */
             tbody.innerHTML = '';
 
+            /* Prolazi kroz svaki artikal i prikazuje ga u tabeli */
             items.forEach(item => {
                 const isLow = item.quantity <= item.minQuantity;
+
                 tbody.innerHTML += `
                     <tr class="hover:bg-gray-50/50 transition group">
                         <td class="p-6">
@@ -124,68 +190,101 @@
                     </tr>
                 `;
             });
+
+            /* Nakon učitavanja tabele, učitava i AI preporuke */
             loadAIDemand();
         }
 
-async function loadAIDemand() {
-    if(user.plan === "start") return
-    try {
-        const res = await fetch(`http://localhost:3000/api/inventory/demand-analysis/${encodeURIComponent(user.serviceName)}`);
-        const data = await res.json();
-        const container = document.getElementById('aiDemandList');
-        container.innerHTML = '';
+        /**
+         * Funkcija učitava AI analizu potražnje
+         */
+        async function loadAIDemand() {
+            /* Ako korisnik ima START plan, AI analiza se ne učitava */
+            if (user.plan === "start") return;
 
-        if (data.length === 0) {
-            container.innerHTML = `<p class="text-xs text-white/40 italic text-center col-span-full">Svi potrebni delovi su na stanju. Bravo!</p>`;
-            return;
+            try {
+                /* Slanje GET zahteva za AI demand analizu */
+                const res = await fetch(`http://localhost:3000/api/inventory/demand-analysis/${encodeURIComponent(user.serviceName)}`);
+
+                /* Pretvaranje odgovora u JSON */
+                const data = await res.json();
+
+                /* Kontejner za AI preporuke */
+                const container = document.getElementById('aiDemandList');
+
+                /* Brišemo postojeći sadržaj */
+                container.innerHTML = '';
+
+                /* Ako nema preporuka, prikazujemo poruku */
+                if (data.length === 0) {
+                    container.innerHTML = `<p class="text-xs text-white/40 italic text-center col-span-full">Svi potrebni delovi su na stanju. Bravo!</p>`;
+                    return;
+                }
+
+                /* Prolazak kroz AI preporuke i prikaz kartica */
+                data.forEach(item => {
+                    container.innerHTML += `
+                        <div class="p-4 rounded-2xl border border-red-500/30 bg-red-500/5 transition hover:bg-red-500/10">
+                            <div class="flex justify-between items-start mb-3">
+                                <p class="font-bold text-xs truncate w-2/3">${item.partName}</p>
+                                <span class="text-[7px] font-black px-1.5 py-0.5 rounded bg-red-500 uppercase tracking-widest">Fali</span>
+                            </div>
+                            <button onclick="quickOrder('${item.partName}')" 
+                                class="w-full bg-white/10 hover:bg-as-accent text-white py-2 rounded-xl text-[10px] font-black transition-all uppercase tracking-widest">
+                                🛒 Naruči odmah
+                            </button>
+                        </div>
+                    `;
+                });
+            } catch (e) {
+                /* Ispis greške u konzoli ako AI analiza ne uspe */
+                console.error("AI Demand Error", e);
+            }
         }
 
-        data.forEach(item => {
-            container.innerHTML += `
-                <div class="p-4 rounded-2xl border border-red-500/30 bg-red-500/5 transition hover:bg-red-500/10">
-                    <div class="flex justify-between items-start mb-3">
-                        <p class="font-bold text-xs truncate w-2/3">${item.partName}</p>
-                        <span class="text-[7px] font-black px-1.5 py-0.5 rounded bg-red-500 uppercase tracking-widest">Fali</span>
-                    </div>
-                    <button onclick="quickOrder('${item.partName}')" 
-                        class="w-full bg-white/10 hover:bg-as-accent text-white py-2 rounded-xl text-[10px] font-black transition-all uppercase tracking-widest">
-                        🛒 Naruči odmah
-                    </button>
-                </div>
-            `;
-        });
-    } catch(e) { console.error("AI Demand Error", e); }
-}
+        /**
+         * Funkcija šalje zahtev za brzu nabavku artikla
+         */
+        async function quickOrder(partName) {
+            const res = await fetch('http://localhost:3000/api/inventory/quick-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    serviceName: user.serviceName,
+                    name: partName.split(',')[0],              /* Naziv artikla */
+                    quantity: 1,                               /* Podrazumevana količina za poručivanje */
+                    priceSell: parseFloat(partName.split(',')[1]) /* Cena izdvojena iz stringa */
+                })
+            });
 
-// Funkcija koja šalje zahtev za "brzu nabavku"
-async function quickOrder(partName) {
-    const res = await fetch('http://localhost:3000/api/inventory/quick-order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            serviceName: user.serviceName,
-            name: partName.split(',')[0],
-            quantity: 1 ,// Možeš staviti i više po defaultu
-            priceSell: parseFloat(partName.split(',')[1])
-        })
-    });
+            /* Ako je zahtev uspešan, osvežava listu artikala i AI analizu */
+            if (res.ok) {
+                loadInventory();
+            }
+        }
 
-
-    if (res.ok) {
-        loadInventory(); // Osveži listu i AI analizu
-    }
-}
+        /**
+         * Funkcija menja stanje zaliha za dati artikal
+         */
         async function updateStock(id, change) {
             await fetch(`http://localhost:3000/api/inventory/${id}/stock`, {
-                method: 'PATCH',
+                method: 'PATCH', /* PATCH - menja se deo postojećeg podatka */
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ change })
             });
+
+            /* Ponovno učitavanje magacina nakon izmene */
             loadInventory();
         }
 
+        /**
+         * Event listener za formu dodavanja novog artikla
+         */
         document.getElementById('addPartForm').addEventListener('submit', async (e) => {
+            /* Sprečava reload stranice */
             e.preventDefault();
+
+            /* Kreiranje objekta sa podacima novog artikla */
             const data = {
                 serviceName: user.serviceName,
                 name: document.getElementById('p-name').value,
@@ -194,19 +293,35 @@ async function quickOrder(partName) {
                 priceSell: parseFloat(document.getElementById('p-price').value)
             };
 
+            /* Slanje POST zahteva za dodavanje artikla */
             await fetch('http://localhost:3000/api/inventory', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
+
+            /* Zatvara modal i osvežava prikaz magacina */
             closeModal();
             loadInventory();
         });
 
-        function logout() { localStorage.removeItem('user'); window.location.href = '/login.html'; }
-        function openModal() { document.getElementById('addPartModal').classList.remove('hidden'); }
-        function closeModal() { document.getElementById('addPartModal').classList.add('hidden'); }
+        /* Funkcija za odjavu korisnika */
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = '/login.html';
+        }
 
+        /* Funkcija za otvaranje modala */
+        function openModal() {
+            document.getElementById('addPartModal').classList.remove('hidden');
+        }
+
+        /* Funkcija za zatvaranje modala */
+        function closeModal() {
+            document.getElementById('addPartModal').classList.add('hidden');
+        }
+
+        /* Kada se stranica učita, automatski učitava inventar */
         document.addEventListener('DOMContentLoaded', loadInventory);
     </script>
 </body>

@@ -4,15 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prijava | ProGarage</title>
+
+    <!-- Ucitavanje Tailwind CSS biblioteka Play CDN metodom, verzija 3.4.17-->
     <script src="https://cdn.tailwindcss.com"></script>
+
+     <!-- Konfiguracija Tailwind-a: dodavanje boja koje koristimo u aplikaciji -->
     <script>
         tailwind.config = {
-            theme: { extend: { colors: { 'as-bg': '#dde0e4', 'as-accent': '#6599d3', 'as-text': '#000000' } } }
+            theme: { 
+                extend: { 
+                    colors: { 
+                        'as-bg': '#dde0e4', 
+                        'as-accent': '#6599d3', 
+                        'as-text': '#000000' 
+                    } 
+                } 
+            }
         }
     </script>
+
 </head>
+
+<!-- Body zauzima celu visinu ekrana, koristi flex za centriranje forme -->
 <body class="bg-as-bg h-screen flex items-center justify-center p-4">
 
+    <!-- Glavna kartica za login formu -->
     <div class="max-w-md w-full bg-white p-10 rounded-3xl shadow-2xl">
         <div class="text-center mb-10">
             <h2 class="text-3xl font-black italic text-as-text">Pro<span class="text-as-accent">Garage</span></h2>
@@ -43,31 +59,47 @@
     </div>
 
     <script>
+        /* Dodaje event listener na formu koji reaguje kada korisnik klikne na submit */
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
+
+            /* Sprečava default ponašanje forme (reload stranice) */
             e.preventDefault();
 
+            /* Pravimo objekat credentials sa unetim emailom i lozinkom */
             const credentials = {
-                email: document.getElementById('email').value,
-                password: document.getElementById('password').value
+                email: document.getElementById('email').value, /* Uzima vrednost iz email input polja */
+                password: document.getElementById('password').value /* Uzima vrednost iz password input polja */
             };
 
             try {
+                /* Šaljemo POST zahtev serveru na /api/login */
                 const response = await fetch('http://localhost:3000/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(credentials)
+                    method: 'POST', /* Kažemo da šaljemo podatke */
+                    headers: { 'Content-Type': 'application/json' }, /* Format podataka je JSON */
+                    body: JSON.stringify(credentials) /* Pretvaramo JavaScript objekat u JSON string */
                 });
 
+                /* Čekamo odgovor servera i pretvaramo ga u JSON */
                 const result = await response.json();
 
+                /* Ako je prijava uspešna */
                 if (response.ok) {
-                    // Čuvamo podatke o sesiji u browseru
+                    
+                    /* Čuvamo podatke o prijavljenom korisniku u localStorage */
                     localStorage.setItem('user', JSON.stringify(result.user));
+                    
+                    /* Preusmeravanje korisnika na dashboard stranicu */
                     window.location.href = '/dashboard.html';
-                } else {
+                } 
+                else 
+                {
+                    /* Ako prijava nije uspela, prikazujemo poruku sa servera ili podrazumevanu poruku */
                     alert(result.message || "Pogrešan email ili lozinka.");
                 }
-            } catch (err) {
+            } 
+            catch (err) 
+            {
+                /* Ako dođe do greške u komunikaciji sa serverom */
                 alert("Greška pri povezivanju sa serverom.");
             }
         });

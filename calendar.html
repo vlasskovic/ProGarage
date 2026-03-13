@@ -4,39 +4,54 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kalendar Termina | ProGarage</title>
+
+    <!-- Ucitavanje Tailwind CSS biblioteka Play CDN metodom, verzija 3.4.17-->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Učitavanje SweetAlert2 biblioteke za lepše popup poruke -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+     <!-- Konfiguracija Tailwind-a: dodavanje boja koje koristimo u aplikaciji -->
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              "as-bg": "#dde0e4",
-              "as-accent": "#6599d3",
-              "as-text": "#000000",
+              "as-bg": "#dde0e4",      
+              "as-accent": "#6599d3",  
+              "as-text": "#000000", 
             },
           },
         },
       };
     </script>
   </head>
+
   <body class="bg-as-bg font-sans text-as-text">
     <div class="flex h-screen">
+
+      <!-- Leva navigacija -->
       <aside class="w-64 bg-white shadow-xl flex flex-col p-6">
+
         <div class="text-2xl font-black mb-10">
           Pro<span class="text-as-accent">Garage</span>
         </div>
+
+        <!-- Navigacioni meni -->
         <nav class="space-y-4 flex-1">
           <a href="/dashboard.html" class="block p-3 rounded-xl hover:bg-gray-100 transition">🏠 Dashboard</a>
           <a href="/calendar.html" class="block p-3 rounded-xl bg-as-accent text-white font-bold shadow-md">📅 Kalendar</a>
           <a href="/inventory.html" class="block p-3 rounded-xl hover:bg-gray-100 transition">📦 Magacin</a>
         </nav>
+
         <button onclick="logout()" class="text-red-500 font-bold p-3 text-left hover:bg-red-50 transition rounded-xl">
           🚪 Odjavi se
         </button>
       </aside>
 
+      <!-- Kalendar: -->
       <main class="flex-1 overflow-y-auto p-8">
+
         <header class="flex justify-between items-center mb-10">
           <h1 class="text-3xl font-black">
             Kalendar <span class="text-as-accent text-xl">/ Svi termini</span>
@@ -52,6 +67,7 @@
           </div>
         </header>
 
+        <!-- Kontejner za prikaz termina u tabeli -->
         <div id="listViewContainer" class="bg-white rounded-3xl shadow-sm overflow-hidden">
           <table class="w-full text-left border-collapse">
             <thead>
@@ -63,11 +79,13 @@
                 <th class="p-5 text-xs font-bold text-gray-400 uppercase text-right">Akcija</th>
               </tr>
             </thead>
+            <!-- Telo tabele u koje JavaScript upisuje termine -->
             <tbody id="calendarTableBody">
-              </tbody>
+            </tbody>
           </table>
         </div>
 
+        <!-- Mesečni prikaz kalendara, podrazumevano sakriven -->
         <div id="monthView" class="hidden bg-white rounded-3xl shadow-sm p-6">
           <div class="flex items-center justify-between mb-6">
             <h2 id="currentMonthYear" class="text-xl font-bold text-as-text uppercase tracking-widest">Mart 2026</h2>
@@ -84,12 +102,14 @@
             <div class="bg-gray-50 p-2 text-center text-[10px] font-bold text-gray-400 uppercase">Pet</div>
             <div class="bg-gray-50 p-2 text-center text-[10px] font-bold text-gray-400 uppercase">Sub</div>
             <div class="bg-gray-50 p-2 text-center text-[10px] font-bold text-gray-400 uppercase">Ned</div>
+            <!-- Ovde JavaScript ubacuje dane i termine za svaki dan -->
             <div id="calendarGrid" class="contents"></div>
           </div>
         </div>
       </main>
     </div>
 
+    <!-- Prikaz detalja termina -->
     <div id="appointmentModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
       <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden transform transition-all">
         <div class="bg-as-accent p-6 text-white flex justify-between items-center">
@@ -124,50 +144,69 @@
           </div>
 
           <div class="pt-4 flex justify-between items-center">
+            <!-- Dugme za brisanje termina -->
             <button onclick="deleteAppointment()" class="text-red-500 text-xs font-bold hover:bg-red-50 px-3 py-2 rounded-lg transition">
               🗑️ Storniraj termin
             </button>
+            <!-- Dugme za zatvaranje kartice -->
             <button onclick="closeModal()" class="bg-gray-100 text-as-text px-6 py-2 rounded-xl font-bold text-sm hover:bg-gray-200 transition">
               Zatvori
             </button>
           </div>
+
         </div>
       </div>
     </div>
 
     <script>
-      // 1. Inicijalizacija korisnika iz LocalStorage-a
+      // 1. Učitavanje prijavljenog korisnika iz localStorage-a
       const user = JSON.parse(localStorage.getItem("user"));
+
+      // Ako korisnik nije prijavljen, preusmerava ga na login stranicu
       if (!user) window.location.href = "/login.html";
 
-      let currentViewDate = new Date(); // Za navigaciju kroz mesece
-      let currentEditingId = null;     // Prati koji termin menjamo u modalu
+      // Pamti trenutno prikazani mesec u mesečnom prikazu
+      let currentViewDate = new Date();
+
+      // Pamti ID termina koji trenutno menjamo ili brišemo u modalu
+      let currentEditingId = null;
 
       /**
-       * Učitava termine i osvežava prikaz tabele
+       * Funkcija učitava sve termine sa servera i popunjava tabelu
        */
       async function loadCalendar() {
         try {
+          /* Slanje GET zahteva serveru za termine konkretnog servisa */
           const res = await fetch(`http://localhost:3000/api/appointments/${encodeURIComponent(user.serviceName)}`);
+
+          /* Pretvaranje odgovora servera u JSON */
           const appointments = await res.json();
 
+          /* Pronalazak tbody elementa tabele */
           const tbody = document.getElementById("calendarTableBody");
+
+          /* Briše prethodni sadržaj tabele pre novog punjenja */
           tbody.innerHTML = "";
 
-          // Sortiranje po datumu uzlazno
+          /* Sortiranje termina po datumu uzlazno */
           appointments.sort((a, b) => new Date(a.time) - new Date(b.time));
 
+          /* Prolazi kroz svaki termin i dodaje novi red u tabelu */
           appointments.forEach((app) => {
             const date = new Date(app.time);
+
+            /* Formatiranje datuma i vremena za prikaz */
             const dateStr = date.toLocaleDateString("sr-RS");
             const timeStr = date.toLocaleTimeString("sr-RS", { hour: "2-digit", minute: "2-digit" });
 
+            /* Stilovi za različite statuse termina */
             const statusClasses = {
               zakazano: "bg-blue-100 text-blue-600",
               u_toku: "bg-yellow-100 text-yellow-600",
               završeno: "bg-green-100 text-green-600",
             };
 
+            /* Dodavanje reda u tabelu */
             tbody.innerHTML += `
               <tr class="border-b border-gray-50 hover:bg-gray-50/50 transition">
                 <td class="p-5 text-sm font-bold">${timeStr} <span class="block font-normal text-xs text-gray-400">${dateStr}</span></td>
@@ -184,17 +223,24 @@
               </tr>`;
           });
 
-          // Ako je otvoren kalendar, osveži i njega
-          if (!document.getElementById("monthView").classList.contains("hidden")) renderMonthView();
-        } catch (e) { console.error("Greška pri učitavanju:", e); }
+          /* Ako je mesečni prikaz otvoren, odmah ga osvežava */
+          if (!document.getElementById("monthView").classList.contains("hidden")) {
+            renderMonthView();
+          }
+        } catch (e) {
+          /* Ispis greške u konzoli ako učitavanje ne uspe */
+          console.error("Greška pri učitavanju:", e);
+        }
       }
 
       /**
-       * STORNIRANJE TERMINA (Brisanje)
+       * Funkcija za storniranje / brisanje termina
        */
       async function deleteAppointment() {
+        /* Ako nije izabran nijedan termin, prekida funkciju */
         if (!currentEditingId) return;
 
+        /* SweetAlert potvrda pre brisanja */
         const result = await Swal.fire({
           title: 'Da li ste sigurni?',
           text: "Ova radnja će trajno obrisati termin iz kalendara!",
@@ -206,64 +252,106 @@
           cancelButtonText: 'Odustani'
         });
 
+        /* Ako je korisnik potvrdio brisanje */
         if (result.isConfirmed) {
           try {
+            /* Slanje DELETE zahteva serveru */
             const res = await fetch(`http://localhost:3000/api/appointments/${currentEditingId}`, { method: "DELETE" });
+
+            /* Ako je brisanje uspešno */
             if (res.ok) {
               Swal.fire('Obrisano!', 'Termin je uspešno uklonjen.', 'success');
+
+              /* Zatvara modal */
               closeModal();
-              loadCalendar(); // Osveži listu odmah
+
+              /* Ponovo učitava kalendar da se promene odmah vide */
+              loadCalendar();
             }
-          } catch (e) { Swal.fire('Greška', 'Server nije odgovorio.', 'error'); }
+          } catch (e) {
+            /* Poruka o grešci ako server ne odgovori */
+            Swal.fire('Greška', 'Server nije odgovorio.', 'error');
+          }
         }
       }
 
       /**
-       * AŽURIRANJE STATUSA (Zakazano -> U toku -> Završeno)
+       * Funkcija za ažuriranje statusa termina
        */
       async function updateStatus(newStatus) {
+        /* Ako nema odabranog termina, funkcija se prekida */
         if (!currentEditingId) return;
+
         try {
+          /* Slanje PATCH zahteva serveru za promenu statusa */
           const res = await fetch(`http://localhost:3000/api/appointments/${currentEditingId}/status`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ status: newStatus }),
           });
+
+          /* Ako je server uspešno obradio zahtev */
           if (res.ok) {
+            /* Signal dashboard stranici da treba da se osveži */
             localStorage.setItem('dashboardRefreshSignal', Date.now().toString());
+
+            /* Zatvara modal */
             closeModal();
+
+            /* Ponovo učitava kalendar */
             loadCalendar();
           }
-        } catch (e) { console.error(e); }
+        } catch (e) {
+          /* Ispis greške u konzoli */
+          console.error(e);
+        }
       }
 
       /**
-       * MODAL LOGIKA
+       * Funkcija otvara modal i popunjava ga podacima iz izabranog termina
        */
       function openAppointmentModal(app) {
+        /* Pamti ID termina koji uređujemo */
         currentEditingId = app.id;
+
+        /* Popunjava podatke u modalu */
         document.getElementById("m-car").innerText = app.car;
         document.getElementById("m-client").innerText = app.client;
         document.getElementById("m-service").innerText = app.serviceType;
+
+        /* Formatiranje datuma i vremena */
         const d = new Date(app.time);
         document.getElementById("m-time").innerText = `${d.toLocaleDateString("sr-RS")} u ${d.toLocaleTimeString("sr-RS", {hour:'2-digit', minute:'2-digit'})}`;
 
-        // Reset statusnih dugmića
+        /* Resetuje stil svih status dugmića */
         document.querySelectorAll(".status-btn").forEach(btn => {
           btn.className = "status-btn border-2 p-2 rounded-xl text-[10px] font-bold transition border-gray-100 text-gray-400";
         });
         
+        /* Pronalazi dugme koje odgovara trenutnom statusu */
         const activeBtn = document.getElementById(`status-${app.status}`);
-        if(app.status === 'završeno') activeBtn.classList.add("bg-green-600", "text-white", "border-green-600");
-        else activeBtn.classList.add("bg-as-accent", "text-white", "border-as-accent");
 
+        /* Ako je status završen, dugme postaje zeleno */
+        if(app.status === 'završeno') {
+          activeBtn.classList.add("bg-green-600", "text-white", "border-green-600");
+        } else {
+          /* U suprotnom koristi akcentnu boju */
+          activeBtn.classList.add("bg-as-accent", "text-white", "border-as-accent");
+        }
+
+        /* Prikazuje modal */
         document.getElementById("appointmentModal").classList.remove("hidden");
       }
 
-      function closeModal() { document.getElementById("appointmentModal").classList.add("hidden"); }
+      /**
+       * Funkcija zatvara modal
+       */
+      function closeModal() {
+        document.getElementById("appointmentModal").classList.add("hidden");
+      }
 
       /**
-       * KALENDAR (Mesečni prikaz)
+       * Funkcija prebacuje prikaz između liste i mesečnog kalendara
        */
       function toggleView(view) {
         const list = document.getElementById("listViewContainer");
@@ -271,38 +359,70 @@
         const bL = document.getElementById("btn-list");
         const bM = document.getElementById("btn-month");
 
+        /* Ako korisnik bira mesečni prikaz */
         if (view === "month") {
-          list.classList.add("hidden"); month.classList.remove("hidden");
-          bM.classList.add("bg-as-accent", "text-white", "shadow-md"); bL.classList.remove("bg-as-accent", "text-white", "shadow-md");
+          list.classList.add("hidden");
+          month.classList.remove("hidden");
+
+          bM.classList.add("bg-as-accent", "text-white", "shadow-md");
+          bL.classList.remove("bg-as-accent", "text-white", "shadow-md");
+
+          /* Crta mesečni kalendar */
           renderMonthView();
         } else {
-          list.classList.remove("hidden"); month.classList.add("hidden");
-          bL.classList.add("bg-as-accent", "text-white", "shadow-md"); bM.classList.remove("bg-as-accent", "text-white", "shadow-md");
+          /* Ako korisnik bira prikaz liste */
+          list.classList.remove("hidden");
+          month.classList.add("hidden");
+
+          bL.classList.add("bg-as-accent", "text-white", "shadow-md");
+          bM.classList.remove("bg-as-accent", "text-white", "shadow-md");
         }
       }
 
+      /**
+       * Funkcija generiše mesečni prikaz kalendara
+       */
       async function renderMonthView() {
         const grid = document.getElementById("calendarGrid");
         const label = document.getElementById("currentMonthYear");
+
+        /* Briše prethodni sadržaj kalendara */
         grid.innerHTML = "";
+
+        /* Uzimanje godine i meseca iz trenutnog prikaza */
         const year = currentViewDate.getFullYear();
         const month = currentViewDate.getMonth();
+
+        /* Nazivi meseci za prikaz */
         const monthNames = ["Januar", "Februar", "Mart", "April", "Maj", "Jun", "Jul", "Avgust", "Septembar", "Oktobar", "Novembar", "Decembar"];
+
+        /* Prikaz trenutnog meseca i godine */
         label.innerText = `${monthNames[month]} ${year}`;
 
+        /* Učitavanje termina sa servera */
         const res = await fetch(`http://localhost:3000/api/appointments/${encodeURIComponent(user.serviceName)}`);
         const appointments = await res.json();
 
+        /* Računanje prvog dana u mesecu i broja dana u mesecu */
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        /* Podešavanje offset-a da kalendar počinje od ponedeljka */
         let offset = firstDay === 0 ? 6 : firstDay - 1;
 
-        for (let i = 0; i < offset; i++) grid.innerHTML += `<div class="bg-gray-50/50 min-h-[100px] border-t border-gray-100"></div>`;
+        /* Dodavanje praznih polja pre prvog dana u mesecu */
+        for (let i = 0; i < offset; i++) {
+          grid.innerHTML += `<div class="bg-gray-50/50 min-h-[100px] border-t border-gray-100"></div>`;
+        }
 
+        /* Prolazi kroz svaki dan u mesecu */
         for (let d = 1; d <= daysInMonth; d++) {
           const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+
+          /* Filtrira termine koji pripadaju tom danu */
           const dayApps = appointments.filter(a => a.time.startsWith(dateStr));
           
+          /* Dodaje jedan dan u kalendar */
           grid.innerHTML += `
             <div class="bg-white min-h-[120px] p-2 border-t border-gray-100 hover:bg-blue-50/30 transition relative">
               <span class="text-xs font-bold text-gray-400">${d}</span>
@@ -313,9 +433,25 @@
         }
       }
 
-      function changeMonth(dir) { currentViewDate.setMonth(currentViewDate.getMonth() + dir); renderMonthView(); }
-      function logout() { localStorage.removeItem("user"); window.location.href = "/login.html"; }
+      /**
+       * Menja mesec u mesečnom prikazu
+       */
+      function changeMonth(dir) {
+        currentViewDate.setMonth(currentViewDate.getMonth() + dir);
+        renderMonthView();
+      }
 
+      /**
+       * Odjava korisnika iz aplikacije
+       */
+      function logout() {
+        localStorage.removeItem("user");
+        window.location.href = "/login.html";
+      }
+
+      /**
+       * Kada se stranica učita, automatski učitava termine
+       */
       document.addEventListener("DOMContentLoaded", loadCalendar);
     </script>
   </body>
